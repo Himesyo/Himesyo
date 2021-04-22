@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Himesyo.ComponentModel
 {
     /// <summary>
-    /// 表示一个可在 <see cref="PropertyGrid"/> 显示的对象。它所显示的属性，由一个 <see cref="T"/> 类型的集合决定。
+    /// 表示一个可在 <see cref="PropertyGrid"/> 显示的对象。它所显示的属性，由一个 <typeparamref name="T"/> 类型的集合决定。
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class ShowObj<T> : CustomTypeDescriptor where T : IShowProperty
