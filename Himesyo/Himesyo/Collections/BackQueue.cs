@@ -40,7 +40,10 @@ namespace Himesyo.Collections
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));
 
-
+            foreach (T item in collection)
+            {
+                Add(item);
+            }
         }
 
         /// <summary>

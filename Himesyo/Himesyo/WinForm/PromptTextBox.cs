@@ -141,7 +141,7 @@ namespace Himesyo.WinForm
         {
             Size = textValue.Size;// new Size(textValue.Width, textValue.Height);
             TextAlignPrompt = TextAlignPrompt;
-            labelPrompt.Size = textValue.Size - new Size(3, 3);
+            labelPrompt.Size = textValue.ClientSize - new Size(3, 3);
         }
 
         private void PromptTextBox_SizeChanged(object sender, EventArgs e)

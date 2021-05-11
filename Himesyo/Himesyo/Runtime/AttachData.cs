@@ -14,7 +14,7 @@ namespace Himesyo.Runtime
         private static readonly DataManager tables = new DataManager();
 
         /// <summary>
-        /// 为指定对象附加数据，此附加数据可随时使用 <see cref="GetData{T}(BaseObject)"/> 获取。
+        /// 为指定对象附加数据，此附加数据可随时使用 <see cref="GetData{T}(object)"/> 获取。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>

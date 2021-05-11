@@ -118,6 +118,10 @@ namespace Himesyo
                 }
                 indexUp = index;
             }
+            if (waitend && indexUpQuotation == cmdLine.Length - 1)
+            {
+                argValue.Remove(0, 1);
+            }
             argValue.Append(cmdLine.Substring(indexUp + 1));
             if (argValue.Length != 0)
             {
@@ -275,7 +279,7 @@ namespace Himesyo
         /// </summary>
         public string Name { get; }
         /// <summary>
-        /// 参数值。可为 <see langword="null"/> 。
+        /// 参数值。不可为 <see langword="null"/> 。
         /// </summary>
         public string Value { get; }
 
@@ -287,7 +291,7 @@ namespace Himesyo
         public ArgValue(string name, string value)
         {
             Name = name;
-            Value = value;
+            Value = value ?? string.Empty;
         }
     }
 }

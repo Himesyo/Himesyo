@@ -181,7 +181,7 @@ namespace Himesyo.IO
         /// <returns></returns>
         private static string GetFullPathNotValidated(string path, string sourcePath)
         {
-            if (path.Length > 1 && path[1] == ':' && path[0] != '/' && path[0] != '\\')
+            if (Regex.IsMatch(path, @"^[a-z0-9_\*\?]*:", RegexOptions.IgnoreCase))
                 return path;
 
             if (sourcePath.Length <= 1 || sourcePath[1] != ':')

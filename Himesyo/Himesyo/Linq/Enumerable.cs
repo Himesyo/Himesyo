@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using SystemEnumerable = System.Linq.Enumerable;
 
 namespace Himesyo.Linq
@@ -12,6 +13,27 @@ namespace Himesyo.Linq
     /// </summary>
     public static class Enumerable
     {
+        /// <summary>
+        /// 如果输入为 <see langword="null"/> 则返回空集合。
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IEnumerable<TSource> NullToEmpty<TSource>(this IEnumerable<TSource> source)
+        {
+            if (source == null)
+            {
+                yield break;
+            }
+            else
+            {
+                foreach (var item in source)
+                {
+                    yield return item;
+                }
+            }
+        }
+
         /// <summary>
         /// 对序列中的每个元素执行动作。
         /// </summary>
@@ -31,7 +53,7 @@ namespace Himesyo.Linq
                 action(item);
             }
         }
-        
+
         /// <summary>
         /// 对序列中的每个元素执行动作并返回。
         /// </summary>
