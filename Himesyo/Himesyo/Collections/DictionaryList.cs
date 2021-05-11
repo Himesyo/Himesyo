@@ -11,6 +11,7 @@ namespace Himesyo.Collections
     /// <para>请订阅 <see cref="DictionaryList{TValue}.CreateAndAdd"/> 事件并将新项添加到 <see cref="DictionaryCollection{TValue}"/> 。</para>
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
+    [Obsolete]
     public class DictionaryList<TValue> : BindingList<TValue>, IBindingList
     {
         /// <summary>

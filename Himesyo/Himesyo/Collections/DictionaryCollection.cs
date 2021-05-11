@@ -7,6 +7,9 @@ using System.Text;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Reflection;
+using System.Data;
+using System.ComponentModel;
 
 namespace Himesyo.Collections
 {
@@ -16,11 +19,13 @@ namespace Himesyo.Collections
     /// <typeparam name="TValue"></typeparam>
     [Serializable]
     public class DictionaryCollection<TValue>
-        : IXmlSerializable, IDictionary<string, TValue>, ICloneable
+        : IDictionary<string, TValue>
+        , IXmlSerializable, ISerializable, IDeserializationCallback
+        , IListSource
         , ICollection<KeyValuePair<string, TValue>>
         , IEnumerable<KeyValuePair<string, TValue>>
         , IDictionary, ICollection, IEnumerable
-        , ISerializable, IDeserializationCallback
+        , ICloneable
     {
         private Dictionary<string, TValue> dictionary;
 
@@ -28,13 +33,19 @@ namespace Himesyo.Collections
         /// 在项列表改变时通知。
         /// </summary>
         public event ItemChangedEventHandler<TValue> ItemChanged;
-        
+
+        /// <summary>
+        /// 用于显示此字典的默认视图。
+        /// </summary>
+        public DictionaryView<TValue> DefaultView { get; }
+
         /// <summary>
         /// 初始化具有默认大小的新实例。
         /// </summary>
         public DictionaryCollection()
         {
             dictionary = new Dictionary<string, TValue>();
+            DefaultView = new DictionaryView<TValue>(this);
         }
         /// <summary>
         /// 使用指定字典集合初始化新实例。
@@ -43,6 +54,19 @@ namespace Himesyo.Collections
         public DictionaryCollection(IDictionary<string, TValue> pairs)
         {
             dictionary = new Dictionary<string, TValue>(pairs);
+            DefaultView = new DictionaryView<TValue>(this);
+        }
+        /// <summary>
+        /// 序列化构造函数
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected DictionaryCollection(SerializationInfo info, StreamingContext context)
+        {
+            Type type = typeof(Dictionary<string, TValue>);
+            ConstructorInfo constructor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.CreateInstance | BindingFlags.Instance, null, new[] { typeof(SerializationInfo), typeof(StreamingContext) }, null);
+            dictionary = (Dictionary<string, TValue>)constructor.Invoke(new object[] { info, context });
+            DefaultView = new DictionaryView<TValue>(this);
         }
 
         /// <summary>
@@ -104,6 +128,21 @@ namespace Himesyo.Collections
         {
             ItemChangedEventArgs<TValue> eventArgs = new ItemChangedEventArgs<TValue>(changedType, key, changedValue, oldValue);
             OnItemChanged(eventArgs);
+            switch (changedType)
+            {
+                case ChangedType.Add:
+                    DefaultView.AddItem(key);
+                    break;
+                case ChangedType.Remove:
+                    DefaultView.DeletedItem(key);
+                    break;
+                case ChangedType.Update:
+                    DefaultView.ResetItem(key);
+                    break;
+                case ChangedType.Clear:
+                    DefaultView.ResetAll();
+                    break;
+            }
         }
         /// <summary>
         /// 触发 <see cref="ItemChanged"/> 事件。
@@ -347,6 +386,15 @@ namespace Himesyo.Collections
 
         #endregion
 
+        #region IListSource 接口成员
+        IList IListSource.GetList()
+        {
+            return DefaultView;
+        }
+
+        bool IListSource.ContainsListCollection => false;
+        #endregion
+
         #region IDictionary ICollection ISerializable IDeserializationCallback 显示接口实现
 
         ICollection IDictionary.Keys => ((IDictionary)dictionary).Keys;
@@ -387,7 +435,9 @@ namespace Himesyo.Collections
         {
             ((IDeserializationCallback)dictionary).OnDeserialization(sender);
         }
+
         #endregion
+
     }
 
     /// <summary>

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+
+using Himesyo.Check;
 using Himesyo.Runtime;
 
 namespace Himesyo.Logger
@@ -51,6 +56,16 @@ namespace Himesyo.Logger
             }
         }
         /// <summary>
+        /// 日志记录器是否可用(是否初始化成功。)
+        /// </summary>
+        public static bool CanWrite
+        {
+            get
+            {
+                return loger != null;
+            }
+        }
+        /// <summary>
         /// 使用指定目录和程序名称初始化记录器。
         /// </summary>
         /// <param name="rootPath"></param>
@@ -59,12 +74,14 @@ namespace Himesyo.Logger
         public static void Init(string rootPath, string logClass)
         {
             root = Path.GetFullPath(rootPath);
-            name = logClass;
-            if (!string.IsNullOrWhiteSpace(name) && !name.EndsWith("_"))
+            name = logClass.Replace(" ", "");
+            if (string.IsNullOrWhiteSpace(name))
             {
-                name += "_";
+                name = "Loger";
             }
             Directory.CreateDirectory(root);
+            string pathHash = root.ToLower().ComputeMD5().ToShow();
+            eventWait = new EventWaitHandle(true, EventResetMode.AutoReset, $"Loger.{pathHash}.{name}");
             loger = new LoggerSimple();
         }
         /// <summary>
@@ -76,24 +93,37 @@ namespace Himesyo.Logger
         {
             if (loger != null)
             {
-                if (WriteDebugLevel || level != LogLevel.Debug)
+                try
                 {
-                    if (loger.writeLocator)
+                    eventWait.WaitOne();
+                    loger.stream.Seek(0, SeekOrigin.End);
+                    if (WriteDebugLevel || level != LogLevel.Debug)
                     {
-                        loger.writer.Write(newInfo);
-                        loger.writer.Write($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [[{AppDomain.CurrentDomain.Id}]{GetMethodName()}] {$"[{level}]",-7} - ");
-                        loger.writer.Write(start);
-                        loger.writer.Write(info);
-                        loger.writer.Write(end);
-                        loger.Check();
+                        if (loger.writeLocator)
+                        {
+                            loger.writer.Write(newInfo);
+                            loger.writer.Write($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [[{Thread.CurrentThread.ManagedThreadId}]{GetMethodName()}] {$"[{level}]",-7} - ");
+                            loger.writer.Write(start);
+                            loger.writer.Write(info);
+                            loger.writer.Write(end);
+                            loger.Check();
+                        }
+                        else
+                        {
+                            loger.writer.Write(Environment.NewLine);
+                            loger.writer.Write($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [[{Thread.CurrentThread.ManagedThreadId}]{GetMethodName()}] {$"[{level}]",-7} - ");
+                            loger.writer.Write(info);
+                            loger.Check();
+                        }
                     }
-                    else
-                    {
-                        loger.writer.Write(Environment.NewLine);
-                        loger.writer.Write($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [[{AppDomain.CurrentDomain.Id}]{GetMethodName()}] {$"[{level}]",-7} - ");
-                        loger.writer.Write(info);
-                        loger.Check();
-                    }
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText(Path.Combine(root, "Loger.ErrorInfo"), $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [{name}] - {ex}");
+                }
+                finally
+                {
+                    eventWait.Set();
                 }
             }
         }
@@ -101,6 +131,7 @@ namespace Himesyo.Logger
         /// 写入调试信息。
         /// </summary>
         /// <param name="info"></param>
+        [Conditional("DEBUG")]
         public static void WriteDebug(string info)
         {
             Write(LogLevel.Debug, info);
@@ -122,6 +153,22 @@ namespace Himesyo.Logger
             Write(LogLevel.Info, $"{info}");
         }
         /// <summary>
+        /// 写入需要记录的警告。
+        /// </summary>
+        /// <param name="info"></param>
+        public static void WriteWarning(string info)
+        {
+            Write(LogLevel.Warn, info);
+        }
+        /// <summary>
+        /// 写入需要记录的警告。
+        /// </summary>
+        /// <param name="info"></param>
+        public static void WriteWarning(object info)
+        {
+            Write(LogLevel.Warn, $"{info}");
+        }
+        /// <summary>
         /// 写入一个异常说明。
         /// </summary>
         /// <param name="info"></param>
@@ -136,7 +183,7 @@ namespace Himesyo.Logger
         /// <param name="ex"></param>
         public static void WriteError(string info, Exception ex)
         {
-            Write(LogLevel.Error, $"{ex.GetType().Name}:{ex.Message} - {info}{GetErrorInfo(ex)}");
+            Write(LogLevel.Error, $"{ex.GetType().Name} : {ex.Message} - {info}{GetErrorInfo(ex)}");
         }
         /// <summary>
         /// 写入一个异常对象。
@@ -145,6 +192,14 @@ namespace Himesyo.Logger
         public static void WriteError(Exception ex)
         {
             Write(LogLevel.Error, $"{ex.GetType().Name} - {ex.Message}{GetErrorInfo(ex)}");
+        }
+        /// <summary>
+        /// 写入一个致命的信息。
+        /// </summary>
+        /// <param name="info"></param>
+        public static void WriteFatal(string info)
+        {
+            Write(LogLevel.Fatal, info);
         }
         /// <summary>
         /// 关闭已打开的文件。
@@ -157,6 +212,8 @@ namespace Himesyo.Logger
                 loger.stream?.Dispose();
                 loger = null;
             }
+            eventWait?.Dispose();
+            eventWait = null;
         }
 
         /// <summary>
@@ -173,11 +230,11 @@ namespace Himesyo.Logger
             string info;
             if (loger?.writeLocator ?? false)
             {
-                info = $"{Environment.NewLine}{new string(error)}{new string(start)}{ex}{new string(end)}";
+                info = $"{Environment.NewLine}{new string(error)}{new string(start)}  {ex}{new string(end)}";
             }
             else
             {
-                info = $"{Environment.NewLine}{ex}";
+                info = $"{Environment.NewLine}  {ex}";
             }
             return info;
         }
@@ -190,25 +247,39 @@ namespace Himesyo.Logger
         private static string root;
         private static string name;
         private static LoggerSimple loger;
-        Stream stream;
-        StreamWriter writer;
+        private static EventWaitHandle eventWait;
+
+        private Stream stream;
+        private StreamWriter writer;
         private bool writeLocator = false;
         private bool writeDebugLevel = true;
 
         private LoggerSimple()
         {
-            string path = Directory.GetFiles(root, $"{name}????-??-??+??????.???.log").LastOrDefault();
-            if (path != null)
+            try
             {
-                FileInfo file = new FileInfo(path);
-                if (file.Length < 1000 * 1024 * 1024)
+                eventWait.WaitOne();
+                string path = Directory.GetFiles(root, $"{name} ????????-??????.???.log").LastOrDefault();
+                if (path != null)
                 {
-                    stream = new FileStream(file.FullName, FileMode.Append, FileAccess.Write, FileShare.Read);
-                    writer = new StreamWriter(stream, Encoding.UTF8);
-                    return;
+                    FileInfo file = new FileInfo(path);
+                    if (file.Length < 1000 * 1024 * 1024)
+                    {
+                        stream = new FileStream(file.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                        writer = new StreamWriter(stream, Encoding.UTF8);
+                        return;
+                    }
                 }
+                Create();
             }
-            Create();
+            catch (Exception ex)
+            {
+                File.AppendAllText(Path.Combine(root, "Loger.ErrorInfo"), $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [{name}] - {ex}");
+            }
+            finally
+            {
+                eventWait.Set();
+            }
         }
         /// <summary>
         /// 创建新日志文件。
@@ -228,8 +299,13 @@ namespace Himesyo.Logger
                 }
                 else
                 {
-                    stream = new FileStream(file.FullName, FileMode.Append, FileAccess.Write, FileShare.Read);
+                    stream = new FileStream(file.FullName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
                     writer = new StreamWriter(stream, Encoding.UTF8);
+                    if (stream.Length == 0)
+                    {
+                        writer.Write($"# [{name}]");
+                        writer.Flush();
+                    }
                     break;
                 }
             }
@@ -252,34 +328,17 @@ namespace Himesyo.Logger
         /// <returns></returns>
         private string GetFilePath(DateTime time)
         {
-            return Path.Combine(root, $"{name}{time:yyyy-MM-dd+HHmmss.fff}.log");
+            return Path.Combine(root, $"{name} {time:yyyyMMdd-HHmmss.fff}.log");
         }
     }
 
-    /// <summary>
-    /// 日志等级。
-    /// </summary>
     public enum LogLevel
     {
-        /// <summary>
-        /// 调试
-        /// </summary>
+        None,
         Debug,
-        /// <summary>
-        /// 运行信息
-        /// </summary>
         Info,
-        /// <summary>
-        /// 警告
-        /// </summary>
         Warn,
-        /// <summary>
-        /// 错误
-        /// </summary>
         Error,
-        /// <summary>
-        /// 致命
-        /// </summary>
-        Crit
+        Fatal
     }
 }

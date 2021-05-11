@@ -50,6 +50,8 @@
     <Compile Include="Collections\BackQueue.cs" />
     <Compile Include="Collections\DictionaryCollection.cs" />
     <Compile Include="Collections\DictionaryList.cs" />
+    <Compile Include="Collections\DictionaryView.cs" />
+    <Compile Include="ComponentModel\ShowObject.cs" />
     <Compile Include="Himesyo\CommandLine.cs" />
     <Compile Include="ComponentModel\ShowObj.cs" />
     <Compile Include="ComponentModel\StandardValuesAttribute.cs" />
@@ -68,7 +70,7 @@
     <Compile Include="Drawing\PointP.cs" />
     <Compile Include="Drawing\PointC.cs" />
     <Compile Include="Drawing\PointConverter.cs" />
-    <Compile Include="Logger\Logger.cs" />
+    <Compile Include="Logger\LoggerSimple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\AttachData.cs" />
     <Compile Include="Runtime\CustomAttributeProvider.cs" />
