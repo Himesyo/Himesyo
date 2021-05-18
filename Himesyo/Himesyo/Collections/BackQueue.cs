@@ -66,6 +66,7 @@ namespace Himesyo.Collections
             if (count > 0)
             {
                 count--;
+                this[count] = default;
             }
         }
 
@@ -78,13 +79,18 @@ namespace Himesyo.Collections
         {
             if (newCount < 0 || newCount > count)
                 throw new ArgumentOutOfRangeException(nameof(newCount));
+            int max = count;
             count = newCount;
+            for (int i = newCount; i < max; i++)
+            {
+                this[i] = default;
+            }
         }
 
         /// <summary>
-        /// 刷新集合。清除因使用 <see cref="Remove()"/> 或 <see cref="SetCount(int)"/> 将元素移除集合而依然保留的元素引用。
+        /// 刷新集合。清除已被移除但依然保留的元素引用。
         /// </summary>
-        public void Refresh()
+        protected void Refresh()
         {
             if (count == 0)
             {
@@ -165,6 +171,17 @@ namespace Himesyo.Collections
                 else
                 {
                     return innerArray[count + endIndex - index];
+                }
+            }
+            private set
+            {
+                if (index <= endIndex)
+                {
+                    innerArray[endIndex - index] = value;
+                }
+                else
+                {
+                    innerArray[count + endIndex - index] = value;
                 }
             }
         }

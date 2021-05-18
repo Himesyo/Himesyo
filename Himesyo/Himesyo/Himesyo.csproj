@@ -75,6 +75,7 @@
     <Compile Include="Runtime\AttachData.cs" />
     <Compile Include="Runtime\CustomAttributeProvider.cs" />
     <Compile Include="Runtime\Reflection.cs" />
+    <Compile Include="Runtime\RuntimeExtend.cs" />
     <Compile Include="Runtime\ShouldIgnoreException.cs" />
     <Compile Include="Runtime\StackTraceHelper.cs" />
     <Compile Include="Himesyo\ShowItem.cs" />
