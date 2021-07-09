@@ -16,6 +16,11 @@ namespace Himesyo.WinForm
     public partial class PromptTextBox : UserControl
     {
         /// <summary>
+        /// 文本框的值改变时发生。
+        /// </summary>
+        public event EventHandler ValueChange;
+
+        /// <summary>
         /// 初始化新实例。
         /// </summary>
         public PromptTextBox()
@@ -119,6 +124,7 @@ namespace Himesyo.WinForm
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             labelPrompt.Visible = string.IsNullOrEmpty(textValue.Text);
+            ValueChange?.Invoke(this, e);
         }
 
         private void TextBox_BackColorChanged(object sender, EventArgs e)
@@ -133,23 +139,19 @@ namespace Himesyo.WinForm
 
         private void TextBox_MultilineChanged(object sender, EventArgs e)
         {
-            Size = textValue.Size;// new Size(textValue.Width, textValue.Height);
-            TextAlignPrompt = TextAlignPrompt;
+            Size = new Size(Size.Width, textValue.Size.Height);
         }
 
         private void TextBox_SizeChanged(object sender, EventArgs e)
         {
-            Size = textValue.Size;// new Size(textValue.Width, textValue.Height);
-            TextAlignPrompt = TextAlignPrompt;
+            Size = new Size(Size.Width, textValue.Size.Height);
             labelPrompt.Size = textValue.ClientSize - new Size(3, 3);
         }
 
         private void PromptTextBox_SizeChanged(object sender, EventArgs e)
         {
             textValue.Size = Size;// new Size(Width, Height);
-            Size = textValue.Size;// new Size(textValue.Width, textValue.Height);
-            TextAlignPrompt = TextAlignPrompt;
+            Size = new Size(Size.Width, textValue.Size.Height);
         }
-
     }
 }
