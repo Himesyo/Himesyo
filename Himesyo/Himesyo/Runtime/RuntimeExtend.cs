@@ -15,9 +15,10 @@ namespace Himesyo.Runtime.Extend
         /// 显示方法全名
         /// </summary>
         /// <param name="method"></param>
-        /// <param name="prefix"></param>
+        /// <param name="includeParameters">是否包含参数信息</param>
+        /// <param name="prefix">输出前缀</param>
         /// <returns></returns>
-        public static string Show(this MethodBase method, bool includeParameters, string prefix = null)
+        public static string Show(this MethodBase method, bool includeParameters = true, string prefix = null)
         {
             string paras = string.Empty;
             if (includeParameters)
