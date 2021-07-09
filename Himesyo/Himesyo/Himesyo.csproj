@@ -51,6 +51,7 @@
     <Compile Include="Collections\DictionaryCollection.cs" />
     <Compile Include="Collections\DictionaryList.cs" />
     <Compile Include="Collections\DictionaryView.cs" />
+    <Compile Include="Collections\TopComparer.cs" />
     <Compile Include="ComponentModel\ShowObject.cs" />
     <Compile Include="Data\DatabaseExtend.cs" />
     <Compile Include="Himesyo\CommandLine.cs" />
