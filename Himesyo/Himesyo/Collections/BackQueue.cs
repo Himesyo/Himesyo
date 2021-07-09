@@ -69,6 +69,36 @@ namespace Himesyo.Collections
                 this[count] = default;
             }
         }
+        /// <summary>
+        /// 移除指定数量的最开始添加的元素。如果集合中没有元素，则什么也不做。
+        /// </summary>
+        public void Remove(int count)
+        {
+            if (count >= Count)
+            {
+                Clear();
+            }
+            else if (count > 0)
+            {
+                this.count--;
+                this[count] = default;
+            }
+        }
+        /// <summary>
+        /// 移除指定数量的最后添加的元素。如果集合中没有元素，则什么也不做。
+        /// </summary>
+        public void RemoveLast(int count)
+        {
+            if (count >= Count)
+            {
+                Clear();
+            }
+            else if (count > 0)
+            {
+                SetCount(this.count - count);
+                ver++;
+            }
+        }
 
         /// <summary>
         /// 设置集合中的元素数量，将最开始添加的元素舍弃。
@@ -79,11 +109,19 @@ namespace Himesyo.Collections
         {
             if (newCount < 0 || newCount > count)
                 throw new ArgumentOutOfRangeException(nameof(newCount));
-            int max = count;
-            count = newCount;
-            for (int i = newCount; i < max; i++)
+            if (newCount == 0)
             {
-                this[i] = default;
+                Clear();
+            }
+            else if (newCount != count)
+            {
+                int max = count;
+                count = newCount;
+                for (int i = newCount; i < max; i++)
+                {
+                    this[i] = default;
+                }
+                ver++;
             }
         }
 
