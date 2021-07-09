@@ -52,6 +52,7 @@
     <Compile Include="Collections\DictionaryList.cs" />
     <Compile Include="Collections\DictionaryView.cs" />
     <Compile Include="ComponentModel\ShowObject.cs" />
+    <Compile Include="Data\DatabaseExtend.cs" />
     <Compile Include="Himesyo\CommandLine.cs" />
     <Compile Include="ComponentModel\ShowObj.cs" />
     <Compile Include="ComponentModel\StandardValuesAttribute.cs" />
