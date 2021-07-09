@@ -34,10 +34,117 @@ namespace Himesyo.Runtime
         }
 
         /// <summary>
+        /// 获取类型字段及其 <see cref="DescriptionAttribute"/> 特性的信息。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public static List<IShowItem> GetDescriptionsOfFields(this Type type, Type valueType, BindingFlags flags)
+        {
+            var fields = type.GetFields(flags);
+            List<IShowItem> result = new List<IShowItem>(fields.Length);
+            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
+            foreach (var field in fields)
+            {
+                if (valueType == null || valueType.IsAssignableFrom(field.FieldType))
+                {
+                    IShowItem item = (IShowItem)ctor.Invoke(null);
+                    item.Value = field.GetValue(null);
+                    item.Show = field.GetDescription();
+                    result.Add(item);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取类型字段及其 <see cref="DisplayNameAttribute"/> 特性的信息。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public static List<IShowItem> GetDisplayNamesOfFields(this Type type, Type valueType, BindingFlags flags)
+        {
+            var fields = type.GetFields(flags);
+            List<IShowItem> result = new List<IShowItem>(fields.Length);
+            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
+            foreach (var field in fields)
+            {
+                if (valueType == null || valueType.IsAssignableFrom(field.FieldType))
+                {
+                    IShowItem item = (IShowItem)ctor.Invoke(null);
+                    item.Value = field.GetValue(null);
+                    item.Show = field.GetDisplayName();
+                    result.Add(item);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取类型属性及其 <see cref="DescriptionAttribute"/> 特性的信息。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public static List<IShowItem> GetDescriptionsOfProperties(this Type type, Type valueType, BindingFlags flags)
+        {
+            var properties = type.GetProperties(flags);
+            List<IShowItem> result = new List<IShowItem>(properties.Length);
+            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
+            foreach (var property in properties)
+            {
+                if (property.GetIndexParameters().Length == 0
+                    && (valueType == null || valueType.IsAssignableFrom(property.PropertyType)))
+                {
+                    IShowItem item = (IShowItem)ctor.Invoke(null);
+                    item.Value = property.GetValue(null, null);
+                    item.Show = property.GetDescription();
+                    result.Add(item);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取类型属性及其 <see cref="DisplayNameAttribute"/> 特性的信息。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public static List<IShowItem> GetDisplayNamesOfProperties(this Type type, Type valueType, BindingFlags flags)
+        {
+            var properties = type.GetProperties(flags);
+            List<IShowItem> result = new List<IShowItem>(properties.Length);
+            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
+            foreach (var property in properties)
+            {
+                if (property.GetIndexParameters().Length == 0
+                    && (valueType == null || valueType.IsAssignableFrom(property.PropertyType)))
+                {
+                    IShowItem item = (IShowItem)ctor.Invoke(null);
+                    item.Value = property.GetValue(null, null);
+                    item.Show = property.GetDisplayName();
+                    result.Add(item);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 获取指定类型所有公共静态字段及其 <see cref="DescriptionAttribute"/> 特性的信息。
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
+        [Obsolete("请改用 GetDescriptionsOfFields 或 GetDescriptionsOfProperties。")]
         public static List<ShowItem<TValue>> GetDescriptions<TValue>()
         {
             Type type = typeof(TValue);
@@ -59,6 +166,7 @@ namespace Himesyo.Runtime
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
+        [Obsolete("请改用 GetDisplayNamesOfFields 或 GetDisplayNamesOfProperties。")]
         public static List<ShowItem<TValue>> GetDisplayNames<TValue>()
         {
             Type type = typeof(TValue);
