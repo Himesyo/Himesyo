@@ -19,6 +19,7 @@ namespace Himesyo.Runtime
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <param name="data"></param>
+        [Obsolete]
         public static void SetData<T>(this object obj, T data) where T : class
         {
             if (obj == null)
@@ -35,6 +36,7 @@ namespace Himesyo.Runtime
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
+        [Obsolete]
         public static T GetData<T>(this object obj) where T : class
         {
             if (obj == null)
@@ -55,6 +57,7 @@ namespace Himesyo.Runtime
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="create"></param>
+        [Obsolete]
         public static void SetCreate<T>(Func<object, T> create) where T : class
         {
             var tableManager = tables.GetTable<T>();

@@ -34,13 +34,58 @@ namespace Himesyo.Runtime
         }
 
         /// <summary>
+        /// 通过预定义类型获取成员列表。部分预定义类型可能具有自动修正效果。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="memberDefinitionType"></param>
+        /// <param name="valueType"></param>
+        /// <returns></returns>
+        public static List<IShowItem> GetDescriptions(this Type type, MemberDefinitionType memberDefinitionType, Type valueType = null)
+        {
+            switch (memberDefinitionType)
+            {
+                case MemberDefinitionType.Enum:
+                    return type.GetDescriptionsOfFields(type, BindingFlags.Public | BindingFlags.Static);
+                case MemberDefinitionType.Constant:
+                    return type.GetDescriptionsOfFields(valueType, BindingFlags.Public | BindingFlags.Static);
+                case MemberDefinitionType.StateProperty:
+                    return type.GetDescriptionsOfProperties(valueType, BindingFlags.Public | BindingFlags.Static);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(memberDefinitionType));
+            }
+        }
+
+        /// <summary>
+        /// 通过预定义类型获取成员列表。部分预定义类型可能具有自动修正效果。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="memberDefinitionType"></param>
+        /// <param name="valueType"></param>
+        /// <returns></returns>
+        public static List<IShowItem> GetDisplayNames(this Type type, MemberDefinitionType memberDefinitionType, Type valueType = null)
+        {
+            switch (memberDefinitionType)
+            {
+                case MemberDefinitionType.Enum:
+                    return type.GetDescriptionsOfFields(type, BindingFlags.Public | BindingFlags.Static);
+                case MemberDefinitionType.Constant:
+                    return type.GetDisplayNamesOfFields(valueType, BindingFlags.Public | BindingFlags.Static);
+                case MemberDefinitionType.StateProperty:
+                    return type.GetDisplayNamesOfProperties(valueType, BindingFlags.Public | BindingFlags.Static);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(memberDefinitionType));
+            }
+        }
+
+        /// <summary>
         /// 获取类型字段及其 <see cref="DescriptionAttribute"/> 特性的信息。
         /// </summary>
         /// <param name="type"></param>
         /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
         /// <param name="flags"></param>
+        /// <param name="instance"></param>
         /// <returns></returns>
-        public static List<IShowItem> GetDescriptionsOfFields(this Type type, Type valueType, BindingFlags flags)
+        public static List<IShowItem> GetDescriptionsOfFields(this Type type, Type valueType, BindingFlags flags, object instance = null)
         {
             var fields = type.GetFields(flags);
             List<IShowItem> result = new List<IShowItem>(fields.Length);
@@ -51,7 +96,7 @@ namespace Himesyo.Runtime
                 if (valueType == null || valueType.IsAssignableFrom(field.FieldType))
                 {
                     IShowItem item = (IShowItem)ctor.Invoke(null);
-                    item.Value = field.GetValue(null);
+                    item.Value = field.GetValue(instance);
                     item.Show = field.GetDescription();
                     result.Add(item);
                 }
@@ -65,8 +110,9 @@ namespace Himesyo.Runtime
         /// <param name="type"></param>
         /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
         /// <param name="flags"></param>
+        /// <param name="instance"></param>
         /// <returns></returns>
-        public static List<IShowItem> GetDisplayNamesOfFields(this Type type, Type valueType, BindingFlags flags)
+        public static List<IShowItem> GetDisplayNamesOfFields(this Type type, Type valueType, BindingFlags flags, object instance = null)
         {
             var fields = type.GetFields(flags);
             List<IShowItem> result = new List<IShowItem>(fields.Length);
@@ -77,7 +123,7 @@ namespace Himesyo.Runtime
                 if (valueType == null || valueType.IsAssignableFrom(field.FieldType))
                 {
                     IShowItem item = (IShowItem)ctor.Invoke(null);
-                    item.Value = field.GetValue(null);
+                    item.Value = field.GetValue(instance);
                     item.Show = field.GetDisplayName();
                     result.Add(item);
                 }
@@ -91,8 +137,9 @@ namespace Himesyo.Runtime
         /// <param name="type"></param>
         /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
         /// <param name="flags"></param>
+        /// <param name="instance"></param>
         /// <returns></returns>
-        public static List<IShowItem> GetDescriptionsOfProperties(this Type type, Type valueType, BindingFlags flags)
+        public static List<IShowItem> GetDescriptionsOfProperties(this Type type, Type valueType, BindingFlags flags, object instance = null)
         {
             var properties = type.GetProperties(flags);
             List<IShowItem> result = new List<IShowItem>(properties.Length);
@@ -104,7 +151,7 @@ namespace Himesyo.Runtime
                     && (valueType == null || valueType.IsAssignableFrom(property.PropertyType)))
                 {
                     IShowItem item = (IShowItem)ctor.Invoke(null);
-                    item.Value = property.GetValue(null, null);
+                    item.Value = property.GetValue(instance, null);
                     item.Show = property.GetDescription();
                     result.Add(item);
                 }
@@ -118,8 +165,9 @@ namespace Himesyo.Runtime
         /// <param name="type"></param>
         /// <param name="valueType">值的类型，如果为 null 表示获取所有类型。</param>
         /// <param name="flags"></param>
+        /// <param name="instance"></param>
         /// <returns></returns>
-        public static List<IShowItem> GetDisplayNamesOfProperties(this Type type, Type valueType, BindingFlags flags)
+        public static List<IShowItem> GetDisplayNamesOfProperties(this Type type, Type valueType, BindingFlags flags, object instance = null)
         {
             var properties = type.GetProperties(flags);
             List<IShowItem> result = new List<IShowItem>(properties.Length);
@@ -131,7 +179,7 @@ namespace Himesyo.Runtime
                     && (valueType == null || valueType.IsAssignableFrom(property.PropertyType)))
                 {
                     IShowItem item = (IShowItem)ctor.Invoke(null);
-                    item.Value = property.GetValue(null, null);
+                    item.Value = property.GetValue(instance, null);
                     item.Show = property.GetDisplayName();
                     result.Add(item);
                 }
@@ -206,5 +254,24 @@ namespace Himesyo.Runtime
             return info;
         }
 
+    }
+
+    /// <summary>
+    /// 预定义的成员类型。
+    /// </summary>
+    public enum MemberDefinitionType
+    {
+        /// <summary>
+        /// 枚举类型值。
+        /// </summary>
+        Enum,
+        /// <summary>
+        /// 常量值。
+        /// </summary>
+        Constant,
+        /// <summary>
+        /// 静态属性值。
+        /// </summary>
+        StateProperty,
     }
 }
