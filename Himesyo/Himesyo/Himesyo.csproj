@@ -82,6 +82,7 @@
     <Compile Include="Runtime\ShouldIgnoreException.cs" />
     <Compile Include="Runtime\StackTraceHelper.cs" />
     <Compile Include="Himesyo\ShowItem.cs" />
+    <Compile Include="Win32\Resources.cs" />
     <Compile Include="Win32\Window.cs" />
     <Compile Include="WinForm\FormShowMessage.cs">
       <SubType>Form</SubType>

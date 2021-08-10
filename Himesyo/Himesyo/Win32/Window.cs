@@ -4,12 +4,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using static Himesyo.Win32.WindowsApi;
+
 namespace Himesyo.Win32
 {
     /// <summary>
     /// 提供与窗体有关的 Win32 API
     /// </summary>
-    public static class Window
+    public static class Windows
     {
         /// <summary>
         /// 查找指定窗体的句柄。
@@ -29,26 +31,6 @@ namespace Himesyo.Win32
         {
             ShowWindowAsync(handle, (int)showType);
         }
-
-        [DllImport("user32.dll", EntryPoint = "FindWindow")]
-        private static extern IntPtr FindWindowA(string lpClassName, string lpWindowName);
-
-        /// <summary>
-        /// windowapi 通过句柄显示或隐藏窗体函数
-        /// </summary>
-        /// <param name="hWnd">窗体句柄</param>
-        /// <param name="cmdShow">显示类型（0：隐藏窗体，1：默认大小窗体，2：最小化窗体，3：最大化窗体）</param>
-        /// <returns>返回成功或失败</returns>
-        [DllImport("user32.dll", EntryPoint = "ShowWindowAsync", SetLastError = true)]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
-
-        [DllImport("user.dll", EntryPoint = "SendMessage")]
-        private static extern int SendMessage(
-            IntPtr hWnd,   // handle to destination window
-            int Msg,    // message
-            int wParam, // first message parameter
-            int lParam  // second message parameter
-        );
 
     }
 
@@ -73,5 +55,29 @@ namespace Himesyo.Win32
         /// 最大化
         /// </summary>
         Max
+    }
+
+    internal static class WindowsApi
+    {
+        [DllImport("user32.dll", EntryPoint = "FindWindow")]
+        public static extern IntPtr FindWindowA(string lpClassName, string lpWindowName);
+
+        /// <summary>
+        /// windowapi 通过句柄显示或隐藏窗体函数
+        /// </summary>
+        /// <param name="hWnd">窗体句柄</param>
+        /// <param name="cmdShow">显示类型（0：隐藏窗体，1：默认大小窗体，2：最小化窗体，3：最大化窗体）</param>
+        /// <returns>返回成功或失败</returns>
+        [DllImport("user32.dll", EntryPoint = "ShowWindowAsync", SetLastError = true)]
+        public static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
+
+        [DllImport("user.dll", EntryPoint = "SendMessage")]
+        public static extern int SendMessage(
+            IntPtr hWnd,   // handle to destination window
+            int Msg,    // message
+            int wParam, // first message parameter
+            int lParam  // second message parameter
+        );
+
     }
 }
