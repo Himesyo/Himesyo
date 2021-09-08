@@ -151,6 +151,56 @@ namespace Himesyo
             }
             return Convert.ToInt64(value);
         }
+
+        /// <summary>
+        /// 当字符串为 <see langword="null"/>、空或仅由空白字符组成时返回空字符串，否则返回原值。
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string FormatEmpty(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return str;
+            }
+        }
+        /// <summary>
+        /// 当字符串为 <see langword="null"/>、空或仅由空白字符组成时返回 <see langword="null"/> ，否则返回原值。
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string FormatNull(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return null;
+            }
+            else
+            {
+                return str;
+            }
+        }
+        /// <summary>
+        /// 当字符串为 <see langword="null"/>、空或仅由空白字符组成时返回 <paramref name="defaultValue"/> ，否则返回原值。
+        /// </summary>
+        /// <param name="str">原字符串</param>
+        /// <param name="defaultValue">原字符串为空时要返回的默认值</param>
+        /// <returns></returns>
+        public static string FormatNull(this string str, string defaultValue)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return defaultValue;
+            }
+            else
+            {
+                return str;
+            }
+        }
         #endregion
 
         #region string 创建

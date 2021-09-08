@@ -21,17 +21,7 @@ namespace Himesyo.Linq
         /// <returns></returns>
         public static IEnumerable<TSource> NullToEmpty<TSource>(this IEnumerable<TSource> source)
         {
-            if (source == null)
-            {
-                yield break;
-            }
-            else
-            {
-                foreach (var item in source)
-                {
-                    yield return item;
-                }
-            }
+            return source ?? EmptyEnumerable<TSource>.Instance;
         }
 
         /// <summary>
@@ -43,10 +33,8 @@ namespace Himesyo.Linq
         /// <exception cref="ArgumentNullException"><paramref name="source"/> 或 <paramref name="action"/> 为 <see langword="null"/> .</exception>
         public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
+            ExceptionHelper.ThrowNull(source, nameof(source));
+            ExceptionHelper.ThrowNull(action, nameof(action));
 
             foreach (var item in source)
             {
@@ -63,16 +51,53 @@ namespace Himesyo.Linq
         /// <exception cref="ArgumentNullException"><paramref name="source"/> 或 <paramref name="action"/> 为 <see langword="null"/> .</exception>
         public static IEnumerable<TSource> ForEachReturn<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
+            ExceptionHelper.ThrowNull(source, nameof(source));
+            ExceptionHelper.ThrowNull(action, nameof(action));
 
             foreach (var item in source)
             {
                 action(item);
                 yield return item;
             }
+        }
+
+        /// <summary>
+        /// 提升类型到 <see cref="IList{T}"/> 。
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IList<TSource> UpList<TSource>(this IEnumerable<TSource> source)
+        {
+            return source as IList<TSource> ?? source.ToList();
+        }
+    }
+
+    /// <summary>
+    /// 空数组。
+    /// </summary>
+    /// <typeparam name="TElement"></typeparam>
+    public class EmptyEnumerable<TElement>
+    {
+        /// <summary>
+        /// 实例。
+        /// </summary>
+        public static readonly TElement[] Instance = new TElement[0];
+    }
+
+    /// <summary>
+    /// 默认选择器。
+    /// </summary>
+    /// <typeparam name="TElement"></typeparam>
+    public class IdentityFunction<TElement>
+    {
+        /// <summary>
+        /// 实例。
+        /// </summary>
+        public static Func<TElement, TElement> Instance
+        {
+            get { return x => x; }
         }
     }
 }
