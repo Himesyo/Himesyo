@@ -32,6 +32,57 @@ namespace Himesyo.Win32
             ShowWindowAsync(handle, (int)showType);
         }
 
+        /// <summary>
+        /// 对指定句柄发送消息。
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public static IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam = default, string lParam = default)
+        {
+            return WindowsApi.SendMessage(hWnd, msg, wParam, lParam);
+        }
+
+        /// <summary>
+        /// 对指定句柄发送消息。
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public static IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, StringBuilder lParam)
+        {
+            return WindowsApi.SendMessage(hWnd, msg, wParam, lParam);
+        }
+
+        /// <summary>
+        /// 对指定句柄发送消息。
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public static IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref IntPtr lParam)
+        {
+            return WindowsApi.SendMessage(hWnd, msg, wParam, ref lParam);
+        }
+
+        /// <summary>
+        /// 对指定句柄发送消息。异步。
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        public static bool PostMessage(HandleRef hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        {
+            return WindowsApi.PostMessage(hWnd, msg, wParam, lParam);
+        }
     }
 
     /// <summary>
@@ -71,13 +122,30 @@ namespace Himesyo.Win32
         [DllImport("user32.dll", EntryPoint = "ShowWindowAsync", SetLastError = true)]
         public static extern bool ShowWindowAsync(IntPtr hWnd, int cmdShow);
 
-        [DllImport("user.dll", EntryPoint = "SendMessage")]
-        public static extern int SendMessage(
-            IntPtr hWnd,   // handle to destination window
-            int Msg,    // message
-            int wParam, // first message parameter
-            int lParam  // second message parameter
-        );
+        #region SendMessage
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, StringBuilder lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, ref IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+
+        #endregion
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool PostMessage(HandleRef hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
     }
 }
