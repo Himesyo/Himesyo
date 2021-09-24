@@ -35,6 +35,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -86,6 +87,18 @@
     <Compile Include="Himesyo\ShowItem.cs" />
     <Compile Include="Win32\Resources.cs" />
     <Compile Include="Win32\Window.cs" />
+    <Compile Include="WinForm\DatabaseConnectionBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForm\DatabaseConnectionBox.Designer.cs">
+      <DependentUpon>DatabaseConnectionBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForm\FormDbConn.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForm\FormDbConn.designer.cs">
+      <DependentUpon>FormDbConn.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinForm\FormShowMessage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +123,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="WinForm\DatabaseConnectionBox.resx">
+      <DependentUpon>DatabaseConnectionBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForm\FormDbConn.resx">
+      <DependentUpon>FormDbConn.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WinForm\FormShowMessage.resx">
       <DependentUpon>FormShowMessage.cs</DependentUpon>
     </EmbeddedResource>
