@@ -30,26 +30,26 @@ namespace Himesyo.WinForm
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelTypes = new System.Windows.Forms.Label();
             this.comboTypes = new System.Windows.Forms.ComboBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.buttonAdd = new System.Windows.Forms.LinkLabel();
             this.propertyEditor = new System.Windows.Forms.PropertyGrid();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.buttonSwitch = new System.Windows.Forms.Button();
+            this.buttonTest = new System.Windows.Forms.Button();
+            this.buttonOK = new System.Windows.Forms.Button();
+            this.buttonConnection = new System.Windows.Forms.LinkLabel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
+            this.buttonString = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
-            // label1
+            // labelTypes
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "选择数据库类型";
+            this.labelTypes.AutoSize = true;
+            this.labelTypes.Location = new System.Drawing.Point(10, 10);
+            this.labelTypes.Name = "labelTypes";
+            this.labelTypes.Size = new System.Drawing.Size(89, 12);
+            this.labelTypes.TabIndex = 0;
+            this.labelTypes.Text = "选择数据库类型";
             // 
             // comboTypes
             // 
@@ -63,17 +63,17 @@ namespace Himesyo.WinForm
             this.comboTypes.TabIndex = 1;
             this.comboTypes.SelectedIndexChanged += new System.EventHandler(this.comboTypes_SelectedIndexChanged);
             // 
-            // linkLabel1
+            // buttonAdd
             // 
-            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(309, 10);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(107, 12);
-            this.linkLabel1.TabIndex = 2;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "添加数据库驱动...";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAdd.AutoSize = true;
+            this.buttonAdd.Location = new System.Drawing.Point(309, 10);
+            this.buttonAdd.Name = "buttonAdd";
+            this.buttonAdd.Size = new System.Drawing.Size(107, 12);
+            this.buttonAdd.TabIndex = 2;
+            this.buttonAdd.TabStop = true;
+            this.buttonAdd.Text = "添加数据库驱动...";
+            this.buttonAdd.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.buttonAdd_LinkClicked);
             // 
             // propertyEditor
             // 
@@ -87,81 +87,81 @@ namespace Himesyo.WinForm
             this.propertyEditor.TabIndex = 3;
             this.propertyEditor.ToolbarVisible = false;
             // 
-            // button1
+            // buttonSwitch
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(12, 417);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(134, 38);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "显示/隐藏高级选项";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSwitch.Location = new System.Drawing.Point(12, 417);
+            this.buttonSwitch.Name = "buttonSwitch";
+            this.buttonSwitch.Size = new System.Drawing.Size(134, 38);
+            this.buttonSwitch.TabIndex = 4;
+            this.buttonSwitch.Text = "显示/隐藏高级选项";
+            this.buttonSwitch.UseVisualStyleBackColor = true;
+            this.buttonSwitch.Click += new System.EventHandler(this.buttonSwitch_Click);
             // 
-            // button2
+            // buttonTest
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(152, 417);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(134, 38);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "测试连接";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.buttonTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonTest.Location = new System.Drawing.Point(152, 417);
+            this.buttonTest.Name = "buttonTest";
+            this.buttonTest.Size = new System.Drawing.Size(134, 38);
+            this.buttonTest.TabIndex = 5;
+            this.buttonTest.Text = "测试连接";
+            this.buttonTest.UseVisualStyleBackColor = true;
+            this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
             // 
-            // button3
+            // buttonOK
             // 
-            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(412, 417);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(134, 38);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "确认";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOK.Location = new System.Drawing.Point(412, 417);
+            this.buttonOK.Name = "buttonOK";
+            this.buttonOK.Size = new System.Drawing.Size(134, 38);
+            this.buttonOK.TabIndex = 5;
+            this.buttonOK.Text = "确认";
+            this.buttonOK.UseVisualStyleBackColor = true;
+            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             // 
-            // linkLabel2
+            // buttonConnection
             // 
-            this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(493, 10);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(53, 12);
-            this.linkLabel2.TabIndex = 6;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "现有连接";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this.buttonConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonConnection.AutoSize = true;
+            this.buttonConnection.Location = new System.Drawing.Point(493, 10);
+            this.buttonConnection.Name = "buttonConnection";
+            this.buttonConnection.Size = new System.Drawing.Size(53, 12);
+            this.buttonConnection.TabIndex = 6;
+            this.buttonConnection.TabStop = true;
+            this.buttonConnection.Text = "现有连接";
+            this.buttonConnection.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.buttonString_LinkClicked);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // linkLabel3
+            // buttonString
             // 
-            this.linkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Location = new System.Drawing.Point(422, 10);
-            this.linkLabel3.Name = "linkLabel3";
-            this.linkLabel3.Size = new System.Drawing.Size(65, 12);
-            this.linkLabel3.TabIndex = 6;
-            this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "连接字符串";
-            this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
+            this.buttonString.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonString.AutoSize = true;
+            this.buttonString.Location = new System.Drawing.Point(422, 10);
+            this.buttonString.Name = "buttonString";
+            this.buttonString.Size = new System.Drawing.Size(65, 12);
+            this.buttonString.TabIndex = 6;
+            this.buttonString.TabStop = true;
+            this.buttonString.Text = "连接字符串";
+            this.buttonString.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.buttonConnection_LinkClicked);
             // 
             // DatabaseConnectionBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.linkLabel3);
-            this.Controls.Add(this.linkLabel2);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonString);
+            this.Controls.Add(this.buttonConnection);
+            this.Controls.Add(this.buttonOK);
+            this.Controls.Add(this.buttonTest);
+            this.Controls.Add(this.buttonSwitch);
             this.Controls.Add(this.propertyEditor);
-            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.comboTypes);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelTypes);
             this.Name = "DatabaseConnectionBox";
             this.Size = new System.Drawing.Size(557, 464);
             this.Load += new System.EventHandler(this.DatabaseConnectionBox_Load);
@@ -172,15 +172,15 @@ namespace Himesyo.WinForm
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelTypes;
         private System.Windows.Forms.ComboBox comboTypes;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel buttonAdd;
         private System.Windows.Forms.PropertyGrid propertyEditor;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.Button buttonSwitch;
+        private System.Windows.Forms.Button buttonTest;
+        private System.Windows.Forms.Button buttonOK;
+        private System.Windows.Forms.LinkLabel buttonConnection;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.LinkLabel linkLabel3;
+        private System.Windows.Forms.LinkLabel buttonString;
     }
 }

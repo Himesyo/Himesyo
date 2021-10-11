@@ -14,6 +14,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using Himesyo;
+using Himesyo.Data;
 using Himesyo.Logger;
 using Himesyo.Runtime;
 
@@ -26,83 +27,43 @@ namespace Himesyo.WinForm
     /// </summary>
     public partial class DatabaseConnectionBox : UserControl
     {
-        public static object Create(Type relevantType, string createType)
-        {
-            string name;
-            if (typeof(DbConnectionStringBuilder).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("ConnectionStringBuilder", "");
-            }
-            else if (typeof(DbConnection).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("Connection", "");
-            }
-            else if (typeof(DbCommand).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("Command", "");
-            }
-            else if (typeof(DbDataAdapter).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("DataAdapter", "");
-            }
-            else if (typeof(DbDataReader).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("DataReader", "");
-            }
-            else if (typeof(DbParameter).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("Parameter", "");
-            }
-            else if (typeof(DbTransaction).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("Transaction", "");
-            }
-            else if (typeof(DbDataRecord).IsAssignableFrom(relevantType))
-            {
-                name = relevantType.Name.Replace("DataRecord", "");
-            }
-            else
-            {
-                throw new ArgumentException($"无法从参数推断出数据库类型。关联类型：{relevantType.FullName}, 创建类型：{createType}。");
-            }
-            string createFullName = $"{relevantType.Namespace}.{name}{createType}";
-            try
-            {
-                object obj = relevantType.Assembly.CreateInstance(createFullName);
-                return obj;
-            }
-            catch (Exception ex)
-            {
-                LoggerSimple.WriteError($"创建数据库对象 {createFullName} 失败。关联类型：{relevantType.FullName}, 创建类型：{createType}。", ex);
-                throw;
-            }
-        }
-
+        /// <summary>
+        /// 提供对数据库的连接。
+        /// </summary>
         public DatabaseConnectionBox()
         {
             InitializeComponent();
+            OnConnectionItems();
+            RefreshConnectionType();
         }
 
+        /// <summary>
+        /// 连接成功后引发的事件。
+        /// </summary>
         public event EventHandler Opened;
+        /// <summary>
+        /// 获取现有连接列表的事件。
+        /// </summary>
         public event ConnectionItemsEventHandler ConnectionItems;
 
-        private DbConnection connection;
-        public DbConnection Connection
-        {
-            get => connection;
-            set
-            {
-                connection = value;
-                if (isShow)
-                {
-                    RefreshShow();
-                }
-            }
-        }
+        /// <summary>
+        /// 成功连接的结果对象。
+        /// </summary>
+        public ConnectionResult Result { get; } = new ConnectionResult();
 
-        public DbConnectionStringBuilder SelectedString
+        /// <summary>
+        /// 获取或设置当前选中的连接字符串拼接对象。
+        /// </summary>
+        public DbConnectionStringBuilder SelectedItem
         {
-            get => propertyEditor.SelectedObject as DbConnectionStringBuilder;
+            get
+            {
+                if (propertyEditor.SelectedObject is ShowObject show)
+                {
+                    return show.ComponentObject as DbConnectionStringBuilder;
+                }
+                return null;
+            }
             set
             {
                 if (value != null)
@@ -119,25 +80,33 @@ namespace Himesyo.WinForm
             }
         }
 
-        private bool isShow = false;
-
-        public void RefreshDataSource()
+        /// <summary>
+        /// 刷新数据库连接的类型。
+        /// </summary>
+        public void RefreshConnectionType()
         {
-            if (comboTypes.DataSource is ShowItem<Type>[] types)
+            if (comboTypes.DataSource is BindingList<ShowItem<Type>> types)
             {
-                comboTypes.DataSource = types.Union(GetTypes()).ToArray();
+                foreach (ShowItem<Type> item in GetTypes().Except(types))
+                {
+                    types.Add(item);
+                }
             }
             else
             {
-                comboTypes.DataSource = GetTypes();
+                comboTypes.DataSource = new BindingList<ShowItem<Type>>(GetTypes());
             }
         }
 
-        public void RefreshShow()
+        /// <summary>
+        /// 显示指定数据库连接记录的连接字符串。
+        /// </summary>
+        /// <param name="connection"></param>
+        public void ShowConnection(DbConnection connection)
         {
             if (connection != null)
             {
-                DbConnectionStringBuilder connString = Create(connection.GetType(), "ConnectionStringBuilder") as DbConnectionStringBuilder;
+                DbConnectionStringBuilder connString = connection.Create<DbConnectionStringBuilder>();
                 connString.ConnectionString = connection.ConnectionString;
                 Type typeConnString = connString.GetType();
                 comboTypes.SelectedItem = typeConnString;
@@ -152,7 +121,7 @@ namespace Himesyo.WinForm
 
         #region 自己用
 
-        private static ShowItem<Type>[] GetTypes()
+        private static List<ShowItem<Type>> GetTypes()
         {
             try
             {
@@ -162,7 +131,7 @@ namespace Himesyo.WinForm
                     .SelectMany(ass => ass.GetTypes())
                     .Where(type => connString.IsAssignableFrom(type) && !type.IsAbstract && type != connString)
                     .Select(type => new ShowItem<Type>(type, type.Name.Replace("StringBuilder", "")))
-                    .ToArray();
+                    .ToList();
                 return types;
             }
             catch (Exception ex)
@@ -195,7 +164,7 @@ namespace Himesyo.WinForm
             show.Add("PersistSecurityInfo", "连接后在连接字符串中保存密码", "安全性");
 
             show.Sort = show.ShowItems.Keys.ToArray();
-            show.ReturningPropertiesBefore += Show_ReturningPropertiesBefore; 
+            show.ReturningPropertiesBefore += Show_ReturningPropertiesBefore;
             return show;
         }
 
@@ -214,7 +183,14 @@ namespace Himesyo.WinForm
         private ConnectionItemsEventArgs OnConnectionItems()
         {
             ConnectionItemsEventArgs args = new ConnectionItemsEventArgs();
-            OnConnectionItems(args);
+            try
+            {
+                OnConnectionItems(args);
+            }
+            catch (Exception ex)
+            {
+                MsgBox.Show($"获取连接项时出错。{ex.Message}");
+            }
             return args;
         }
 
@@ -222,21 +198,22 @@ namespace Himesyo.WinForm
 
         #region 引发事件
 
+        /// <summary>
+        /// 引发 <see cref="Opened"/> 事件。
+        /// </summary>
+        /// <param name="e"></param>
         protected virtual void OnOpened(EventArgs e)
         {
             Opened?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// 引发 <see cref="ConnectionItems"/> 事件。
+        /// </summary>
+        /// <param name="e"></param>
         protected virtual void OnConnectionItems(ConnectionItemsEventArgs e)
         {
-            try
-            {
-                ConnectionItems?.Invoke(this, e);
-            }
-            catch (Exception ex)
-            {
-                LoggerSimple.WriteError("获取连接项时发生异常。", ex);
-            }
+            ConnectionItems?.Invoke(this, e);
         }
 
         #endregion
@@ -244,9 +221,7 @@ namespace Himesyo.WinForm
         private void DatabaseConnectionBox_Load(object sender, EventArgs e)
         {
             OnConnectionItems();
-            RefreshDataSource();
-            RefreshShow();
-            isShow = true;
+            RefreshConnectionType();
         }
 
         private void comboTypes_SelectedIndexChanged(object sender, EventArgs e)
@@ -268,7 +243,7 @@ namespace Himesyo.WinForm
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonSwitch_Click(object sender, EventArgs e)
         {
             if (propertyEditor.SelectedObject is ShowObject show)
             {
@@ -277,14 +252,14 @@ namespace Himesyo.WinForm
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonTest_Click(object sender, EventArgs e)
         {
             if (propertyEditor.SelectedObject is ShowObject show && show.ComponentObject is DbConnectionStringBuilder connectionString)
             {
-                Type type = connectionString.GetType();
+                DbConnection connection = null;
                 try
                 {
-                    DbConnection connection = Create(type, "Connection") as DbConnection;
+                    connection = connectionString.Create<DbConnection>();
                     connection.ConnectionString = connectionString.ConnectionString;
                     connection.Open();
                     MsgBox.Show("连接成功！");
@@ -302,20 +277,24 @@ namespace Himesyo.WinForm
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void buttonOK_Click(object sender, EventArgs e)
         {
             if (propertyEditor.SelectedObject is ShowObject show && show.ComponentObject is DbConnectionStringBuilder connectionString)
             {
-                connection?.Close();
-                connection?.Dispose();
+                if (Result.Connection != null)
+                {
+                    Result.Connection.Close();
+                    Result.Connection.Dispose();
+                    Result.Connection = null;
+                }
+                Result.ConnectionStringBuilder = connectionString;
                 DbConnection newConnection = null;
                 try
                 {
-                    Type type = connectionString.GetType();
-                    newConnection = Create(type, "Connection") as DbConnection;
+                    newConnection = connectionString.Create<DbConnection>();
                     newConnection.ConnectionString = connectionString.ConnectionString;
                     newConnection.Open();
-                    connection = newConnection;
+                    Result.Connection = newConnection;
                     OnOpened();
                 }
                 catch (Exception ex)
@@ -331,17 +310,11 @@ namespace Himesyo.WinForm
         {
             if (sender is ToolStripMenuItem menuItem && menuItem.Tag is ShowItem<DbConnectionStringBuilder> item)
             {
-                comboTypes.SelectedItem = item.Value.GetType();
-                if (comboTypes.SelectedItem is ShowItem<Type> type)
-                {
-                    ShowObject show = CreateConnectionStringShow(item.Value);
-                    type.Tag = show;
-                    propertyEditor.SelectedObject = show;
-                }
+                SelectedItem = item.Value;
             }
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void buttonAdd_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             using (OpenFileDialog open = new OpenFileDialog())
             {
@@ -369,14 +342,14 @@ namespace Himesyo.WinForm
                             }
                         }
                     }
-                    RefreshDataSource();
+                    RefreshConnectionType();
                 }
             }
         }
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void buttonString_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var items = OnConnectionItems().GetItems();
+            ShowItem<DbConnectionStringBuilder>[] items = OnConnectionItems().GetItems();
             if (items.Length > 0)
             {
                 contextMenuStrip1.Items.Clear();
@@ -392,7 +365,7 @@ namespace Himesyo.WinForm
             }
         }
 
-        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void buttonConnection_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (propertyEditor.SelectedObject is ShowObject show && show.ComponentObject is DbConnectionStringBuilder connectionString)
             {
@@ -407,23 +380,72 @@ namespace Himesyo.WinForm
         }
     }
 
+    /// <summary>
+    /// 表示 <see cref="DatabaseConnectionBox.ConnectionItems"/> 事件使用的委托。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void ConnectionItemsEventHandler(object sender, ConnectionItemsEventArgs e);
 
+    /// <summary>
+    /// 为 <see cref="DatabaseConnectionBox.ConnectionItems"/> 事件参数提供类型。
+    /// </summary>
     public class ConnectionItemsEventArgs : EventArgs
     {
         private readonly List<ShowItem<DbConnectionStringBuilder>> items = new List<ShowItem<DbConnectionStringBuilder>>();
 
+        /// <summary>
+        /// 添加现有连接项。
+        /// </summary>
+        /// <param name="connection"></param>
         public void Add(ShowItem<DbConnectionStringBuilder> connection)
         {
             items.Add(connection);
         }
 
+        /// <summary>
+        /// 获取当前显示项集合。
+        /// </summary>
+        /// <returns></returns>
         public ShowItem<DbConnectionStringBuilder>[] GetItems()
         {
             return items.ToArray();
         }
     }
 
+    /// <summary>
+    /// 连接结果类型。
+    /// </summary>
+    public class ConnectionResult
+    {
+        /// <summary>
+        /// 连接字符串拼接对象。
+        /// </summary>
+        public DbConnectionStringBuilder ConnectionStringBuilder { get; set; }
+
+        /// <summary>
+        /// 数据库连接。
+        /// </summary>
+        public DbConnection Connection { get; set; }
+
+        /// <summary>
+        /// 当前连接是否在打开状态。
+        /// </summary>
+        public bool IsOpen => Connection?.State == ConnectionState.Open;
+
+        /// <summary>
+        /// 使用当前 <see cref="ConnectionStringBuilder"/> 打开新连接。
+        /// </summary>
+        /// <returns></returns>
+        public DbConnection OpenNewConnection()
+        {
+            ExceptionHelper.ThrowInvalid(ConnectionStringBuilder == null, "连接对象为 null 。");
+            DbConnection connection = ConnectionStringBuilder.Create<DbConnection>();
+            connection.ConnectionString = ConnectionStringBuilder.ConnectionString;
+            connection.Open();
+            return connection;
+        }
+    }
 
     /// <summary>
     /// 表示对一个对象的封装用于自定义属性说明符。
@@ -432,6 +454,9 @@ namespace Himesyo.WinForm
     {
         public event EventHandler ReturningPropertiesBefore;
 
+        /// <summary>
+        /// 封装的对象。
+        /// </summary>
         public object ComponentObject { get; }
 
         /// <summary>

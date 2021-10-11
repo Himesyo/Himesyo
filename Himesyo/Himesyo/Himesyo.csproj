@@ -93,11 +93,8 @@
     <Compile Include="WinForm\DatabaseConnectionBox.Designer.cs">
       <DependentUpon>DatabaseConnectionBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="WinForm\FormDbConn.cs">
+    <Compile Include="WinForm\DatabaseConnectionDialog.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WinForm\FormDbConn.designer.cs">
-      <DependentUpon>FormDbConn.cs</DependentUpon>
     </Compile>
     <Compile Include="WinForm\FormShowMessage.cs">
       <SubType>Form</SubType>
@@ -125,9 +122,6 @@
   <ItemGroup>
     <EmbeddedResource Include="WinForm\DatabaseConnectionBox.resx">
       <DependentUpon>DatabaseConnectionBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WinForm\FormDbConn.resx">
-      <DependentUpon>FormDbConn.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForm\FormShowMessage.resx">
       <DependentUpon>FormShowMessage.cs</DependentUpon>
