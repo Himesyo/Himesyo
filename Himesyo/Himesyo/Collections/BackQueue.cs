@@ -47,6 +47,11 @@ namespace Himesyo.Collections
         }
 
         /// <summary>
+        /// 获取当前集合的容量。它是固定的。
+        /// </summary>
+        public int Capacity => maxCapacity;
+
+        /// <summary>
         /// 添加一个集合。
         /// </summary>
         /// <param name="collection"></param>
@@ -123,6 +128,24 @@ namespace Himesyo.Collections
                 }
                 ver++;
             }
+        }
+
+        /// <summary>
+        /// 创建一个新 <see cref="BackQueue{T}"/> 集合，它拥有指定长度并从当前集合复制最后添加的元素。
+        /// </summary>
+        /// <param name="newCount"></param>
+        public BackQueue<T> Copy(int newCount)
+        {
+            if (newCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(newCount), newCount, "不能为负数。");
+
+            BackQueue<T> newQueue = new BackQueue<T>(newCount);
+            int length = Math.Min(count, newCount);
+            for (int i = length - 1; i >= 0; i--)
+            {
+                newQueue.Add(this[i]);
+            }
+            return newQueue;
         }
 
         /// <summary>
