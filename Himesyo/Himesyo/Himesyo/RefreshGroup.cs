@@ -46,7 +46,7 @@ namespace Himesyo
         /// <summary>
         /// 刷新与指定对象关联的刷新对象。
         /// </summary>
-        /// <param name="refreshObject"></param>
+        /// <param name="obj"></param>
         public static void StartRefresh(object obj)
         {
             if (neetRefreshObjectCollection.TryGetValue(obj, out RefreshGroup group))

@@ -31,7 +31,7 @@ namespace Himesyo.Drawing
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public static Complex operator !(Complex a)//
+        public static Complex operator !(Complex a)
         {
             return new Complex(a.Re, -a.Im);
         }
@@ -39,7 +39,7 @@ namespace Himesyo.Drawing
         /// 返回模长
         /// </summary>
         /// <returns></returns>
-        public double Modulus()//模长
+        public double Modulus()
         {
             return Math.Sqrt(Re * Re + Im * Im);
         }
@@ -55,7 +55,7 @@ namespace Himesyo.Drawing
         /// 返回幅角
         /// </summary>
         /// <returns></returns>
-        public double Arg()//幅角
+        public double Arg()
         {
             if (Im > 0)
                 return Math.Acos(Re / (Modulus() * 1.0000000000001));

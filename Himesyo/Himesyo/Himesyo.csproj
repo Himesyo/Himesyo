@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Check\MD5Extend.cs" />
+    <Compile Include="Check\HashExtend.cs" />
     <Compile Include="Collections\BackQueue.cs" />
     <Compile Include="Collections\DictionaryCollection.cs" />
     <Compile Include="Collections\DictionaryList.cs" />

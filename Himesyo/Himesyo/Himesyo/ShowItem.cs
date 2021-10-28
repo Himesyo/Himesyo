@@ -9,6 +9,7 @@ namespace Himesyo
 {
     /// <summary>
     /// 表示一个自定义显示的项。它与 <see cref="Value"/> 的值相同。
+    /// <para>警告：此类型不建议作为字典的键，因为它的比较方法已重写并且其哈希代码可变。</para>
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
     public class ShowItem<TValue> : IShowItem
