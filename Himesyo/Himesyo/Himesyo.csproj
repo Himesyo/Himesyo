@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Himesyo</RootNamespace>
     <AssemblyName>Himesyo</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\bin\Himesyo.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -47,44 +50,97 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Check\HashExtend.cs" />
-    <Compile Include="Collections\BackQueue.cs" />
-    <Compile Include="Collections\DictionaryCollection.cs" />
-    <Compile Include="Collections\DictionaryList.cs" />
-    <Compile Include="Collections\DictionaryView.cs" />
-    <Compile Include="Collections\TopComparer.cs" />
-    <Compile Include="Collections\ToStringComparer.cs" />
+    <Compile Include="..\hmslib\Check\HashExtend.cs">
+      <Link>Check\HashExtend.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Collections\BackQueue.cs">
+      <Link>Collections\BackQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Collections\DictionaryCollection.cs">
+      <Link>Collections\DictionaryCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Collections\DictionaryView.cs">
+      <Link>Collections\DictionaryView.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Collections\TopComparer.cs">
+      <Link>Collections\TopComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Collections\ToStringComparer.cs">
+      <Link>Collections\ToStringComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\CommandLine.cs">
+      <Link>CommandLine.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Data\DatabaseExtend.cs">
+      <Link>Data\DatabaseExtend.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Drawing\Complex.cs">
+      <Link>Drawing\Complex.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Drawing\Constants.cs">
+      <Link>Drawing\Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Drawing\MathComplex.cs">
+      <Link>Drawing\MathComplex.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\ExceptionHelper.cs">
+      <Link>ExceptionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\ExtendCorrelation.cs">
+      <Link>ExtendCorrelation.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Freezer.cs">
+      <Link>Freezer.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\IO\AppConfig.cs">
+      <Link>IO\AppConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\IO\FileHelper.cs">
+      <Link>IO\FileHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\IO\Files.cs">
+      <Link>IO\Files.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\IO\PathConvert.cs">
+      <Link>IO\PathConvert.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Linq\Enumerable.cs">
+      <Link>Linq\Enumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Property.cs">
+      <Link>Property.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\AttachData.cs">
+      <Link>Runtime\AttachData.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\CustomAttributeProvider.cs">
+      <Link>Runtime\CustomAttributeProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\Reflection.cs">
+      <Link>Runtime\Reflection.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\RuntimeExtend.cs">
+      <Link>Runtime\RuntimeExtend.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\ShouldIgnoreException.cs">
+      <Link>Runtime\ShouldIgnoreException.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\StackTraceHelper.cs">
+      <Link>Runtime\StackTraceHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\ShowItem.cs">
+      <Link>ShowItem.cs</Link>
+    </Compile>
     <Compile Include="ComponentModel\ShowObject.cs" />
-    <Compile Include="Data\DatabaseExtend.cs" />
-    <Compile Include="IO\FileHelper.cs" />
-    <Compile Include="Himesyo\ExceptionHelper.cs" />
-    <Compile Include="Himesyo\CommandLine.cs" />
     <Compile Include="ComponentModel\ShowObj.cs" />
     <Compile Include="ComponentModel\StandardValuesAttribute.cs" />
     <Compile Include="ComponentModel\StandardValuesConverter.cs" />
-    <Compile Include="Himesyo\ExtendCorrelation.cs" />
     <Compile Include="Himesyo.cs" />
-    <Compile Include="Himesyo\Freezer.cs" />
-    <Compile Include="Himesyo\RefreshGroup.cs" />
-    <Compile Include="IO\AppConfig.cs" />
-    <Compile Include="IO\Files.cs" />
-    <Compile Include="IO\PathConvert.cs" />
-    <Compile Include="Linq\Enumerable.cs" />
-    <Compile Include="Drawing\Complex.cs" />
-    <Compile Include="Drawing\Constants.cs" />
-    <Compile Include="Drawing\MathComplex.cs" />
     <Compile Include="Drawing\PointP.cs" />
     <Compile Include="Drawing\PointC.cs" />
     <Compile Include="Drawing\PointConverter.cs" />
     <Compile Include="Logger\LoggerSimple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runtime\AttachData.cs" />
-    <Compile Include="Runtime\CustomAttributeProvider.cs" />
-    <Compile Include="Runtime\Reflection.cs" />
-    <Compile Include="Runtime\RuntimeExtend.cs" />
-    <Compile Include="Runtime\ShouldIgnoreException.cs" />
-    <Compile Include="Runtime\StackTraceHelper.cs" />
-    <Compile Include="Himesyo\ShowItem.cs" />
     <Compile Include="Win32\Resources.cs" />
     <Compile Include="Win32\Window.cs" />
     <Compile Include="WinForm\DatabaseConnectionBox.cs">

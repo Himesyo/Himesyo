@@ -138,7 +138,7 @@ namespace Himesyo.Check
         /// <returns></returns>
         public static string ToShow(this byte[] data)
         {
-            StringBuilder str = new StringBuilder();
+            StringBuilder str = new StringBuilder(data.Length * 2);
             foreach (byte d in data)
             {
                 str.Append(d.ToString("x2"));
@@ -151,12 +151,12 @@ namespace Himesyo.Check
         /// <param name="data">要转换的字节数组</param>
         /// <param name="formt">转换格式，即 <see cref="byte.ToString(string)"/> 的参数。</param>
         /// <returns></returns>
-        public static string ToShow(this byte[] data, string formt)
+        public static string ToShow(this byte[] data, string format)
         {
-            StringBuilder str = new StringBuilder();
+            StringBuilder str = new StringBuilder(data.Length * 2);
             foreach (byte d in data)
             {
-                str.Append(d.ToString(formt));
+                str.Append(d.ToString(format));
             }
             return str.ToString();
         }

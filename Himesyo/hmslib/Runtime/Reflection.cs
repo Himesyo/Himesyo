@@ -48,10 +48,10 @@ namespace Himesyo.Runtime
                     return type.GetDescriptionsOfFields(type, BindingFlags.Public | BindingFlags.Static);
                 case MemberDefinitionType.Constant:
                     return type.GetDescriptionsOfFields(valueType, BindingFlags.Public | BindingFlags.Static);
-                case MemberDefinitionType.StateProperty:
+                case MemberDefinitionType.StaticProperty:
                     return type.GetDescriptionsOfProperties(valueType, BindingFlags.Public | BindingFlags.Static);
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(memberDefinitionType));
+                    throw new InvalidEnumArgumentException(nameof(memberDefinitionType), (int)memberDefinitionType, typeof(MemberDefinitionType));
             }
         }
 
@@ -70,10 +70,10 @@ namespace Himesyo.Runtime
                     return type.GetDescriptionsOfFields(type, BindingFlags.Public | BindingFlags.Static);
                 case MemberDefinitionType.Constant:
                     return type.GetDisplayNamesOfFields(valueType, BindingFlags.Public | BindingFlags.Static);
-                case MemberDefinitionType.StateProperty:
+                case MemberDefinitionType.StaticProperty:
                     return type.GetDisplayNamesOfProperties(valueType, BindingFlags.Public | BindingFlags.Static);
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(memberDefinitionType));
+                    throw new InvalidEnumArgumentException(nameof(memberDefinitionType), (int)memberDefinitionType, typeof(MemberDefinitionType));
             }
         }
 
@@ -89,7 +89,7 @@ namespace Himesyo.Runtime
         {
             var fields = type.GetFields(flags);
             List<IShowItem> result = new List<IShowItem>(fields.Length);
-            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            Type root = typeof(ShowItem<>).MakeGenericType(valueType ?? typeof(object));
             ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
             foreach (var field in fields)
             {
@@ -116,7 +116,7 @@ namespace Himesyo.Runtime
         {
             var fields = type.GetFields(flags);
             List<IShowItem> result = new List<IShowItem>(fields.Length);
-            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            Type root = typeof(ShowItem<>).MakeGenericType(valueType ?? typeof(object));
             ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
             foreach (var field in fields)
             {
@@ -143,7 +143,7 @@ namespace Himesyo.Runtime
         {
             var properties = type.GetProperties(flags);
             List<IShowItem> result = new List<IShowItem>(properties.Length);
-            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            Type root = typeof(ShowItem<>).MakeGenericType(valueType ?? typeof(object));
             ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
             foreach (var property in properties)
             {
@@ -171,7 +171,7 @@ namespace Himesyo.Runtime
         {
             var properties = type.GetProperties(flags);
             List<IShowItem> result = new List<IShowItem>(properties.Length);
-            Type root = typeof(ShowItem<>).MakeGenericType(type);
+            Type root = typeof(ShowItem<>).MakeGenericType(valueType ?? typeof(object));
             ConstructorInfo ctor = root.GetConstructor(Type.EmptyTypes);
             foreach (var property in properties)
             {
@@ -181,50 +181,6 @@ namespace Himesyo.Runtime
                     IShowItem item = (IShowItem)ctor.Invoke(null);
                     item.Value = property.GetValue(instance, null);
                     item.Show = property.GetDisplayName();
-                    result.Add(item);
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 获取指定类型所有公共静态字段及其 <see cref="DescriptionAttribute"/> 特性的信息。
-        /// </summary>
-        /// <typeparam name="TValue"></typeparam>
-        /// <returns></returns>
-        [Obsolete("请改用 GetDescriptionsOfFields 或 GetDescriptionsOfProperties。")]
-        public static List<ShowItem<TValue>> GetDescriptions<TValue>()
-        {
-            Type type = typeof(TValue);
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static);
-            List<ShowItem<TValue>> result = new List<ShowItem<TValue>>(fields.Length);
-            foreach (var field in fields)
-            {
-                if (type.IsAssignableFrom(field.FieldType))
-                {
-                    ShowItem<TValue> item = new ShowItem<TValue>((TValue)field.GetValue(null), field.GetDescription());
-                    result.Add(item);
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 获取指定类型所有公共静态字段及其 <see cref="DisplayNameAttribute"/> 特性的信息。
-        /// </summary>
-        /// <typeparam name="TValue"></typeparam>
-        /// <returns></returns>
-        [Obsolete("请改用 GetDisplayNamesOfFields 或 GetDisplayNamesOfProperties。")]
-        public static List<ShowItem<TValue>> GetDisplayNames<TValue>()
-        {
-            Type type = typeof(TValue);
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static);
-            List<ShowItem<TValue>> result = new List<ShowItem<TValue>>(fields.Length);
-            foreach (var field in fields)
-            {
-                if (type.IsAssignableFrom(field.FieldType))
-                {
-                    ShowItem<TValue> item = new ShowItem<TValue>((TValue)field.GetValue(null), field.GetDisplayName());
                     result.Add(item);
                 }
             }
@@ -272,6 +228,6 @@ namespace Himesyo.Runtime
         /// <summary>
         /// 静态属性值。
         /// </summary>
-        StateProperty,
+        StaticProperty,
     }
 }
