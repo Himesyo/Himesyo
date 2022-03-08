@@ -149,7 +149,7 @@ namespace Himesyo.Check
         /// 将字节数组转换为可见字符串。
         /// </summary>
         /// <param name="data">要转换的字节数组</param>
-        /// <param name="formt">转换格式，即 <see cref="byte.ToString(string)"/> 的参数。</param>
+        /// <param name="format">转换格式，即 <see cref="byte.ToString(string)"/> 的参数。</param>
         /// <returns></returns>
         public static string ToShow(this byte[] data, string format)
         {

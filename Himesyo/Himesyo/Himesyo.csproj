@@ -131,10 +131,18 @@
     <Compile Include="..\hmslib\ShowItem.cs">
       <Link>ShowItem.cs</Link>
     </Compile>
+    <Compile Include="ComponentModel\ConstValue.cs" />
+    <Compile Include="ComponentModel\Design\FileLengthFormatter.cs" />
     <Compile Include="ComponentModel\ShowObject.cs" />
     <Compile Include="ComponentModel\ShowObj.cs" />
     <Compile Include="ComponentModel\StandardValuesAttribute.cs" />
     <Compile Include="ComponentModel\StandardValuesConverter.cs" />
+    <Compile Include="Drawing\FormatStringRenderer\FormatStringRenderer.cs" />
+    <Compile Include="Drawing\FormatStringRenderer\Phrase.cs" />
+    <Compile Include="Drawing\FormatStringRenderer\Phrases.cs" />
+    <Compile Include="Drawing\FormatStringRenderer\PhraseType.cs" />
+    <Compile Include="Drawing\FormatStringRenderer\Renderer.cs" />
+    <Compile Include="Drawing\FormatStringRenderer\StringFormatException.cs" />
     <Compile Include="Himesyo.cs" />
     <Compile Include="Drawing\PointP.cs" />
     <Compile Include="Drawing\PointC.cs" />
@@ -143,6 +151,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Win32\Resources.cs" />
     <Compile Include="Win32\Window.cs" />
+    <Compile Include="WinForm\CheckBoxFormat.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinForm\DatabaseConnectionBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -157,6 +168,15 @@
     </Compile>
     <Compile Include="WinForm\FormShowMessage.designer.cs">
       <DependentUpon>FormShowMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForm\LabalFormat.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForm\ListLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForm\ListLayoutPanel.Designer.cs">
+      <DependentUpon>ListLayoutPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="WinForm\MsgBox.cs" />
     <Compile Include="WinForm\Popup\GripBounds.cs" />
@@ -174,6 +194,9 @@
     <Compile Include="WinForm\PromptTextBox.designer.cs">
       <DependentUpon>PromptTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinForm\RadioButtonFormat.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="WinForm\DatabaseConnectionBox.resx">
@@ -181,6 +204,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WinForm\FormShowMessage.resx">
       <DependentUpon>FormShowMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForm\ListLayoutPanel.resx">
+      <DependentUpon>ListLayoutPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForm\PromptTextBox.resx">
       <DependentUpon>PromptTextBox.cs</DependentUpon>

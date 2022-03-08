@@ -33,6 +33,22 @@ namespace Himesyo.IO
             }
         }
 
+        /// <summary>
+        /// 打开文件或目录。
+        /// </summary>
+        /// <param name="path"></param>
+        public static void Open(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            if (File.Exists(path) || Directory.Exists(path))
+            {
+                Process.Start(path);
+                return;
+            }
+        }
+
         #region 目录结构
 
         /// <summary>

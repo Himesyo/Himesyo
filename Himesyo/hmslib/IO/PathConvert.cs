@@ -273,14 +273,14 @@ namespace Himesyo.IO
                 {
                     for (int i = sourcePathArr.Length; i < pathArr.Length; i++)
                     {
-                        result.Push("..");
+                        result.Push(pathArr[i]);
                     }
                 }
                 else if (pathArr.Length < sourcePathArr.Length)
                 {
                     for (int i = pathArr.Length; i < sourcePathArr.Length; i++)
                     {
-                        result.Push(sourcePathArr[i]);
+                        result.Push("..");
                     }
                 }
             }

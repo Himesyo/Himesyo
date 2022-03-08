@@ -94,5 +94,24 @@ namespace Himesyo
         {
             throw new NotSupportedException(message.FormatNull() ?? "不支持所指定的方法。");
         }
+
+        /// <summary>
+        /// 返回 <see cref="ObjectDisposedException"/> 异常。
+        /// </summary>
+        /// <param name="objectName"></param>
+        /// <returns></returns>
+        public static ObjectDisposedException ObjectDisposed(string objectName)
+        {
+            return new ObjectDisposedException(objectName);
+        }
+        /// <summary>
+        /// 抛出 <see cref="ObjectDisposedException"/> 异常。
+        /// </summary>
+        /// <param name="objectName"></param>
+        /// <param name="message"></param>
+        public static void ThrowObjectDisposed(string objectName, string message)
+        {
+            throw new ObjectDisposedException(objectName, message);
+        }
     }
 }
