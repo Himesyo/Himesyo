@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>ciphertext</Title>
+			<Shortcut>Ciphertext</Shortcut>
+			<Description>密文保存字符串的代码片段</Description>
+			<Author>Himesyo</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>newCiphertext</ID>
+					<ToolTip>加密类型的名称</ToolTip>
+					<Default>My</Default>
+				</Literal>
+				<Literal Editable="false">
+					<ID>TCiphertextBase</ID>
+					<ToolTip>基类型</ToolTip>
+					<Function>SimpleTypeName(global::Himesyo.IO.CiphertextBase)</Function>
+				</Literal>
+				<Literal Editable="false">
+					<ID>TCryptoTransform</ID>
+					<Function>SimpleTypeName(global::System.Security.Cryptography.ICryptoTransform)</Function>
+				</Literal>
+				<Literal Editable="false">
+					<ID>SystemSerializable</ID>
+					<Function>SimpleTypeName(global::System.Serializable)</Function>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[[$SystemSerializable$]
+public class $newCiphertext$Ciphertext : $TCiphertextBase$
+{
+  public static $TCryptoTransform$ EncryptionTransform { get; set; }
+  public static $TCryptoTransform$ DecryptTransform { get; set; }
+
+  public $newCiphertext$Ciphertext() { }
+  public $newCiphertext$Ciphertext(string value) : base(value) { }
+	
+  protected override ICryptoTransform GetEncryptionTransform()
+  {
+      return EncryptionTransform;
+  }
+  protected override ICryptoTransform GetDecryptTransform()
+  {
+      return DecryptTransform;
+  }
+
+  public static implicit operator $newCiphertext$Ciphertext(string value)
+  {
+      return new $newCiphertext$Ciphertext(value);
+  }
+  public static implicit operator string($newCiphertext$Ciphertext value)
+  {
+      return value?.Value;
+  }
+}]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

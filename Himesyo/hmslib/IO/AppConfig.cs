@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -16,7 +17,8 @@ namespace Himesyo.IO
     /// <summary>
     /// 表示应用程序设置。
     /// </summary>
-    public class AppConfig
+    [Serializable]
+    public class AppConfig : ICloneable
     {
         /// <summary>
         /// 使用默认的 XML 序列化器加载指定文件。如果文件不存在，则返回 <see langword="default"/> 。
@@ -127,6 +129,26 @@ namespace Himesyo.IO
         public virtual void Save(string path)
         {
             Save((object)this, path);
+        }
+
+        /// <summary>
+        /// 使用二进制反序列化的方式创建副本。
+        /// </summary>
+        /// <returns></returns>
+        public virtual AppConfig Clone()
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, this);
+                stream.Seek(0, SeekOrigin.Begin);
+                return (AppConfig)formatter.Deserialize(stream);
+            }
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
         }
     }
 }
