@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 namespace Himesyo.ComponentModel
 {
     /// <summary>
@@ -11,7 +12,12 @@ namespace Himesyo.ComponentModel
     /// </summary>
     public class ShowObject : CustomTypeDescriptor
     {
-        private object showObject;
+        public event EventHandler ReturningPropertiesBefore;
+
+        /// <summary>
+        /// 封装的对象。
+        /// </summary>
+        public object ComponentObject { get; }
 
         /// <summary>
         /// 要封装的对象。
@@ -19,17 +25,66 @@ namespace Himesyo.ComponentModel
         /// <param name="obj"></param>
         public ShowObject(object obj)
         {
-            showObject = obj;
+            ComponentObject = obj;
         }
 
+        /// <summary>
+        /// 设定要显示的属性和属性的信息。
+        /// </summary>
+        public Dictionary<string, ShowPropertyInfo> ShowItems { get; } = new Dictionary<string, ShowPropertyInfo>();
         /// <summary>
         /// 是否显示隐藏的属性。
         /// </summary>
         public bool ShowHide { get; set; }
         /// <summary>
-        /// 设定要显示的属性和属性的信息。
+        /// 排序依据。
         /// </summary>
-        public Dictionary<string, ShowPropertyInfo> ShowItems { get; } = new Dictionary<string, ShowPropertyInfo>();
+        public string[] Sort { get; set; }
+
+        /// <summary>
+        /// 添加要显示的属性和其显示信息。
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="displayName"></param>
+        /// <param name="category"></param>
+        /// <param name="hide"></param>
+        public void Add(string name, string displayName, string category, bool hide = false)
+        {
+            ShowPropertyInfo info = new ShowPropertyInfo();
+            info.Hide = hide;
+            if (!string.IsNullOrWhiteSpace(displayName))
+            {
+                info.AddDisplayName(displayName);
+            }
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                info.AddCategory(category);
+            }
+            ShowItems.Add(name, info);
+        }
+        /// <summary>
+        /// 自动添加显示项。
+        /// </summary>
+        /// <param name="defaultInfo"></param>
+        /// <returns></returns>
+        public string[] AutoAddShowItems(ShowPropertyInfo defaultInfo)
+        {
+            if (defaultInfo == null)
+            {
+                defaultInfo = new ShowPropertyInfo();
+            }
+            var names = TypeDescriptor.GetProperties(ComponentObject)
+                .Cast<PropertyDescriptor>()
+                .Where(pd => !ShowItems.ContainsKey(pd.Name))
+                .Select(pd =>
+                {
+                    ShowPropertyInfo info = (ShowPropertyInfo)defaultInfo.Clone();
+                    ShowItems.Add(pd.Name, info);
+                    return pd.Name;
+                })
+                .ToArray();
+            return names;
+        }
 
         #region CustomTypeDescriptor 成员
 
@@ -40,14 +95,22 @@ namespace Himesyo.ComponentModel
         /// <returns></returns>
         public override PropertyDescriptorCollection GetProperties(Attribute[] attributes)
         {
-            var pds = TypeDescriptor.GetProperties(showObject)
+            //AutoAddShowItems(new ShowPropertyInfo(false));
+            ReturningPropertiesBefore?.Invoke(this, EventArgs.Empty);
+
+            var pds = TypeDescriptor.GetProperties(ComponentObject)
                 .Cast<PropertyDescriptor>()
                 .Where(pd => ShowItems.ContainsKey(pd.Name))
                 .Select(pd => new { Descriptor = pd, ShowInfo = ShowItems[pd.Name] ?? new ShowPropertyInfo() })
-                .Where(property => ShowHide || property.ShowInfo.Hide)
-                .Select(property => TypeDescriptor.CreateProperty(property.Descriptor.ComponentType, property.Descriptor, property.ShowInfo.Attributes.ToArray()))
+                .Where(property => ShowHide || !property.ShowInfo.Hide)
+                .Select(property => new ShowObjectPropertyDescriptor(property.Descriptor, property.ShowInfo.Attributes.ToArray()))
                 .ToArray();
-            return new PropertyDescriptorCollection(pds);
+            PropertyDescriptorCollection collection = new PropertyDescriptorCollection(pds);
+            if (Sort != null)
+            {
+                collection = collection.Sort(Sort);
+            }
+            return collection;
         }
 
         /// <summary>
@@ -57,23 +120,70 @@ namespace Himesyo.ComponentModel
         /// <returns></returns>
         public override object GetPropertyOwner(PropertyDescriptor pd)
         {
-            if (showObject is ICustomTypeDescriptor obj)
+            if (ComponentObject is ICustomTypeDescriptor obj && pd is ShowObjectPropertyDescriptor p)
             {
-                return obj.GetPropertyOwner(pd);
+                object propertyOwner = obj.GetPropertyOwner(p.Property);
+                return propertyOwner;
             }
             else
             {
-                return showObject;
+                return ComponentObject;
             }
         }
 
         #endregion
+
+        private class ShowObjectPropertyDescriptor : PropertyDescriptor
+        {
+            public PropertyDescriptor Property { get; }
+
+            public override Type ComponentType => Property.ComponentType;
+            public override bool IsReadOnly => Property.IsReadOnly;
+            public override Type PropertyType => Property.PropertyType;
+
+            public ShowObjectPropertyDescriptor(PropertyDescriptor descriptor, Attribute[] attributes)
+                : base(descriptor, attributes)
+            {
+                Property = descriptor;
+            }
+
+            public override bool CanResetValue(object component)
+            {
+                return false;
+            }
+
+            public override object GetValue(object component)
+            {
+                return Property.GetValue(component);
+            }
+
+            public override void ResetValue(object component)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void SetValue(object component, object value)
+            {
+                Property.SetValue(component, value);
+            }
+
+            public override bool ShouldSerializeValue(object component)
+            {
+                return false;
+            }
+        }
     }
 
-    public class ShowPropertyInfo
+    public class ShowPropertyInfo : ICloneable
     {
         public bool Hide { get; set; }
-        public List<Attribute> Attributes { get; } = new List<Attribute>();
+        public List<Attribute> Attributes { get; private set; } = new List<Attribute>();
+
+        public ShowPropertyInfo() { }
+        public ShowPropertyInfo(bool hide)
+        {
+            Hide = hide;
+        }
 
         public void AddDisplayName(string name)
         {
@@ -86,6 +196,13 @@ namespace Himesyo.ComponentModel
         public void AddDescription(string description)
         {
             Attributes.Add(new DescriptionAttribute(description));
+        }
+
+        public virtual object Clone()
+        {
+            ShowPropertyInfo other = (ShowPropertyInfo)MemberwiseClone();
+            other.Attributes = Attributes.ToList();
+            return other;
         }
     }
 }

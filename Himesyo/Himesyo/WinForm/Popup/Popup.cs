@@ -39,7 +39,7 @@ namespace Himesyo.WinForm
     /// Represents a pop-up window.
     /// <para>https://github.com/AdamsLair/winforms.popupcontrol</para>
     /// </summary>
-    [CLSCompliant(true), ToolboxItem(false)]
+    [ToolboxItem(false)]
     public partial class Popup : ToolStripDropDown
     {
         #region " Fields & Properties "
@@ -87,7 +87,7 @@ namespace Himesyo.WinForm
         private bool _isChildPopupOpened;
         private bool _resizable;
         /// <summary>
-        /// Gets or sets a value indicating whether the <see cref="PopupControl.Popup" /> is resizable.
+        /// Gets or sets a value indicating whether the <see cref="Popup" /> is resizable.
         /// </summary>
         /// <value><c>true</c> if resizable; otherwise, <c>false</c>.</value>
         public bool Resizable
@@ -98,7 +98,7 @@ namespace Himesyo.WinForm
 
         private bool _nonInteractive;
         /// <summary>
-        /// Gets or sets a value indicating whether the <see cref="PopupControl.Popup"></see> acts like a transparent windows (so it cannot be clicked).
+        /// Gets or sets a value indicating whether the <see cref="Popup"></see> acts like a transparent windows (so it cannot be clicked).
         /// </summary>
         /// <value>
         /// <c>true</c> if the popup is noninteractive; otherwise, <c>false</c>.</value>
@@ -148,7 +148,7 @@ namespace Himesyo.WinForm
         #region " Constructors "
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PopupControl.Popup"/> class.
+        /// Initializes a new instance of the <see cref="Popup"/> class.
         /// </summary>
         /// <param name="content">The content of the pop-up.</param>
         /// <remarks>

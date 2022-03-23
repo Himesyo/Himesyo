@@ -324,6 +324,7 @@ namespace Himesyo.IO
     /// 为 <see cref="Files.ErrorHandler"/> 事件提供委托类型。
     /// </summary>
     /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void EnumerateErrorEventHandler(object sender, EnumerateErrorEventArgs e);
 
     /// <summary>

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 namespace Himesyo.Drawing
 {
     /// <summary>
@@ -54,6 +55,16 @@ namespace Himesyo.Drawing
             R = r;
             polarAngle = t;
             T = t;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         public static implicit operator PointP(PointF point)

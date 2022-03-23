@@ -4,39 +4,33 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D7D8E074-64DD-430E-8391-D5AF2C25FF5F}</ProjectGuid>
+    <ProjectGuid>{9D54A876-6782-42A4-BBF5-886219BDB81B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Himesyo</RootNamespace>
     <AssemblyName>Himesyo</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Himesyo\net4.8\</OutputPath>
+    <OutputPath>..\bin\Himesyo\net4.0\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\Himesyo\net4.8\Himesyo.xml</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\bin\Himesyo\net4.0\Himesyo.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\Himesyo\net4.8\</OutputPath>
+    <OutputPath>..\bin\Himesyo\net4.0\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\bin\Himesyo\net4.8\Himesyo.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
+    <DocumentationFile>..\bin\Himesyo\net4.0\Himesyo.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -51,6 +45,116 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Himesyo\ComponentModel\ConstValue.cs">
+      <Link>ComponentModel\ConstValue.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\ComponentModel\Design\FileLengthFormatter.cs">
+      <Link>ComponentModel\Design\FileLengthFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\FormatStringRenderer.cs">
+      <Link>Drawing\FormatStringRenderer\FormatStringRenderer.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\Phrase.cs">
+      <Link>Drawing\FormatStringRenderer\Phrase.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\Phrases.cs">
+      <Link>Drawing\FormatStringRenderer\Phrases.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\PhraseType.cs">
+      <Link>Drawing\FormatStringRenderer\PhraseType.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\Renderer.cs">
+      <Link>Drawing\FormatStringRenderer\Renderer.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\StringFormatException.cs">
+      <Link>Drawing\FormatStringRenderer\StringFormatException.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\PointC.cs">
+      <Link>Drawing\PointC.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\PointConverter.cs">
+      <Link>Drawing\PointConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Drawing\PointP.cs">
+      <Link>Drawing\PointP.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Win32\Resources.cs">
+      <Link>Win32\Resources.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\Win32\Window.cs">
+      <Link>Win32\Window.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\CheckBoxFormat.cs">
+      <Link>WinForm\CheckBoxFormat.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\ControlHelper.cs">
+      <Link>WinForm\ControlHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\DatabaseConnectionBox.cs">
+      <Link>WinForm\DatabaseConnectionBox.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\DatabaseConnectionBox.designer.cs">
+      <Link>WinForm\DatabaseConnectionBox.designer.cs</Link>
+      <DependentUpon>DatabaseConnectionBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\DatabaseConnectionDialog.cs">
+      <Link>WinForm\DatabaseConnectionDialog.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\FormShowMessage.cs">
+      <Link>WinForm\FormShowMessage.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\FormShowMessage.designer.cs">
+      <Link>WinForm\FormShowMessage.designer.cs</Link>
+      <DependentUpon>FormShowMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\LabalFormat.cs">
+      <Link>WinForm\LabalFormat.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\ListLayoutPanel.cs">
+      <Link>WinForm\ListLayoutPanel.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\ListLayoutPanel.designer.cs">
+      <Link>WinForm\ListLayoutPanel.designer.cs</Link>
+      <DependentUpon>ListLayoutPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\MsgBox.cs">
+      <Link>WinForm\MsgBox.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\Popup\GripBounds.cs">
+      <Link>WinForm\Popup\GripBounds.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\Popup\NativeMethods.cs">
+      <Link>WinForm\Popup\NativeMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\Popup\Popup.cs">
+      <Link>WinForm\Popup\Popup.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\Popup\Popup.designer.cs">
+      <Link>WinForm\Popup\Popup.designer.cs</Link>
+      <DependentUpon>Popup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\Popup\PopupAnimations.cs">
+      <Link>WinForm\Popup\PopupAnimations.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\PromptTextBox.cs">
+      <Link>WinForm\PromptTextBox.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\PromptTextBox.designer.cs">
+      <Link>WinForm\PromptTextBox.designer.cs</Link>
+      <DependentUpon>PromptTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\Himesyo\WinForm\RadioButtonFormat.cs">
+      <Link>WinForm\RadioButtonFormat.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="..\hmslib\Check\HashExtend.cs">
       <Link>Check\HashExtend.cs</Link>
     </Compile>
@@ -105,12 +209,6 @@
     <Compile Include="..\hmslib\ExtendCorrelation.cs">
       <Link>ExtendCorrelation.cs</Link>
     </Compile>
-    <Compile Include="..\hmslib\FixedThread.cs">
-      <Link>FixedThread.cs</Link>
-    </Compile>
-    <Compile Include="..\hmslib\FixedThreadFlag.cs">
-      <Link>FixedThreadFlag.cs</Link>
-    </Compile>
     <Compile Include="..\hmslib\Freezer.cs">
       <Link>Freezer.cs</Link>
     </Compile>
@@ -131,6 +229,12 @@
     </Compile>
     <Compile Include="..\hmslib\Linq\Enumerable.cs">
       <Link>Linq\Enumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Logger\Logger.cs">
+      <Link>Logger\Logger.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Logger\LoggerSimple.cs">
+      <Link>Logger\LoggerSimple.cs</Link>
     </Compile>
     <Compile Include="..\hmslib\Property.cs">
       <Link>Property.cs</Link>
@@ -156,81 +260,23 @@
     <Compile Include="..\hmslib\ShowItem.cs">
       <Link>ShowItem.cs</Link>
     </Compile>
-    <Compile Include="ComponentModel\ConstValue.cs" />
-    <Compile Include="ComponentModel\Design\FileLengthFormatter.cs" />
-    <Compile Include="Drawing\FormatStringRenderer\FormatStringRenderer.cs" />
-    <Compile Include="Drawing\FormatStringRenderer\Phrase.cs" />
-    <Compile Include="Drawing\FormatStringRenderer\Phrases.cs" />
-    <Compile Include="Drawing\FormatStringRenderer\PhraseType.cs" />
-    <Compile Include="Drawing\FormatStringRenderer\Renderer.cs" />
-    <Compile Include="Drawing\FormatStringRenderer\StringFormatException.cs" />
-    <Compile Include="Himesyo.cs" />
-    <Compile Include="Drawing\PointP.cs" />
-    <Compile Include="Drawing\PointC.cs" />
-    <Compile Include="Drawing\PointConverter.cs" />
-    <Compile Include="Logger\LoggerSimple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Win32\Resources.cs" />
-    <Compile Include="Win32\Window.cs" />
-    <Compile Include="WinForm\CheckBoxFormat.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WinForm\ControlHelper.cs" />
-    <Compile Include="WinForm\DatabaseConnectionBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="WinForm\DatabaseConnectionBox.Designer.cs">
-      <DependentUpon>DatabaseConnectionBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForm\DatabaseConnectionDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WinForm\FormShowMessage.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WinForm\FormShowMessage.designer.cs">
-      <DependentUpon>FormShowMessage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForm\LabalFormat.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WinForm\ListLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WinForm\ListLayoutPanel.Designer.cs">
-      <DependentUpon>ListLayoutPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForm\MsgBox.cs" />
-    <Compile Include="WinForm\Popup\GripBounds.cs" />
-    <Compile Include="WinForm\Popup\NativeMethods.cs" />
-    <Compile Include="WinForm\Popup\Popup.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WinForm\Popup\Popup.Designer.cs">
-      <DependentUpon>Popup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForm\Popup\PopupAnimations.cs" />
-    <Compile Include="WinForm\PromptTextBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="WinForm\PromptTextBox.designer.cs">
-      <DependentUpon>PromptTextBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WinForm\RadioButtonFormat.cs">
-      <SubType>Component</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="WinForm\DatabaseConnectionBox.resx">
+    <EmbeddedResource Include="..\Himesyo\WinForm\DatabaseConnectionBox.resx">
+      <Link>WinForm\DatabaseConnectionBox.resx</Link>
       <DependentUpon>DatabaseConnectionBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="WinForm\FormShowMessage.resx">
+    <EmbeddedResource Include="..\Himesyo\WinForm\FormShowMessage.resx">
+      <Link>WinForm\FormShowMessage.resx</Link>
       <DependentUpon>FormShowMessage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="WinForm\ListLayoutPanel.resx">
+    <EmbeddedResource Include="..\Himesyo\WinForm\ListLayoutPanel.resx">
+      <Link>WinForm\ListLayoutPanel.resx</Link>
       <DependentUpon>ListLayoutPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="WinForm\PromptTextBox.resx">
+    <EmbeddedResource Include="..\Himesyo\WinForm\PromptTextBox.resx">
+      <Link>WinForm\PromptTextBox.resx</Link>
       <DependentUpon>PromptTextBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

@@ -1,5 +1,6 @@
 using System.Drawing;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 namespace Himesyo.Drawing
 {
     /// <summary>
@@ -30,6 +31,16 @@ namespace Himesyo.Drawing
         {
             R = r;
             I = i;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         public static implicit operator PointC(PointF point)

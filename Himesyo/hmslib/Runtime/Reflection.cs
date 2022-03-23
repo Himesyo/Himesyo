@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -210,6 +211,65 @@ namespace Himesyo.Runtime
             return info;
         }
 
+        /// <summary>
+        /// 生成一个委托，此委托执行指定枚举类型的按位 <see langword="OR"/> 运算。
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <returns></returns>
+        public static Func<TEnum, TEnum, TEnum> EnumOr<TEnum>() 
+            where TEnum : Enum, new()
+        {
+            Type type = typeof(TEnum);
+            ParameterExpression argLeft = Expression.Parameter(type);
+            ParameterExpression argRight = Expression.Parameter(type);
+            Expression valueLeft = Expression.Convert(argLeft, type.GetEnumUnderlyingType());
+            Expression valueRight = Expression.Convert(argRight, type.GetEnumUnderlyingType());
+            Expression valueResult = Expression.Or(valueLeft, valueRight);
+            Expression resultExpression = Expression.Convert(valueResult, type);
+            LambdaExpression lambdaExpression = Expression.Lambda(resultExpression, argLeft, argRight);
+            Func<TEnum, TEnum, TEnum> result = (Func<TEnum, TEnum, TEnum>)lambdaExpression.Compile();
+            return result;
+        }
+
+        /// <summary>
+        /// 生成一个委托，此委托执行指定枚举类型的按位 <see langword="AND"/> 运算。
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <returns></returns>
+        public static Func<TEnum, TEnum, TEnum> EnumAnd<TEnum>()
+            where TEnum : Enum, new()
+        {
+            Type type = typeof(TEnum);
+            ParameterExpression argLeft = Expression.Parameter(type);
+            ParameterExpression argRight = Expression.Parameter(type);
+            Expression valueLeft = Expression.Convert(argLeft, type.GetEnumUnderlyingType());
+            Expression valueRight = Expression.Convert(argRight, type.GetEnumUnderlyingType());
+            Expression valueResult = Expression.And(valueLeft, valueRight);
+            Expression resultExpression = Expression.Convert(valueResult, type);
+            LambdaExpression lambdaExpression = Expression.Lambda(resultExpression, argLeft, argRight);
+            Func<TEnum, TEnum, TEnum> result = (Func<TEnum, TEnum, TEnum>)lambdaExpression.Compile();
+            return result;
+        }
+
+        /// <summary>
+        /// 生成一个委托，此委托执行指定枚举类型的按位 <see langword="XOR"/> 运算。
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <returns></returns>
+        public static Func<TEnum, TEnum, TEnum> EnumExclusiveOr<TEnum>()
+            where TEnum : Enum, new()
+        {
+            Type type = typeof(TEnum);
+            ParameterExpression argLeft = Expression.Parameter(type);
+            ParameterExpression argRight = Expression.Parameter(type);
+            Expression valueLeft = Expression.Convert(argLeft, type.GetEnumUnderlyingType());
+            Expression valueRight = Expression.Convert(argRight, type.GetEnumUnderlyingType());
+            Expression valueResult = Expression.ExclusiveOr(valueLeft, valueRight);
+            Expression resultExpression = Expression.Convert(valueResult, type);
+            LambdaExpression lambdaExpression = Expression.Lambda(resultExpression, argLeft, argRight);
+            Func<TEnum, TEnum, TEnum> result = (Func<TEnum, TEnum, TEnum>)lambdaExpression.Compile();
+            return result;
+        }
     }
 
     /// <summary>

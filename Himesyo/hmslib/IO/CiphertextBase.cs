@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 namespace Himesyo.IO
 {
     /// <summary>
-    /// 表示以密文保存的字符串。此类为抽象类。
+    /// 以密文形式保存到文件的字符串。此类为抽象类。
     /// </summary>
     [Serializable]
     [TypeConverter(typeof(EncryptionConverter))]
@@ -19,6 +19,7 @@ namespace Himesyo.IO
         /// 此对象存储的实际值。
         /// </summary>
         [XmlIgnore]
+        [PasswordPropertyText(true)]
         public string Value { get; protected set; }
 
         /// <summary>
@@ -30,44 +31,61 @@ namespace Himesyo.IO
         {
             get
             {
-                ICryptoTransform transform = GetEncryptionTransform();
+                using (ICryptoTransform transform = CreateEncryptionTransform())
+                {
+                    if (transform == null || string.IsNullOrEmpty(Value))
+                        return Value;
 
-                if (transform == null || string.IsNullOrEmpty(Value))
-                    return Value;
-
-                byte[] input = Encoding.UTF8.GetBytes(Value);
-                byte[] output = transform.TransformFinalBlock(input, 0, input.Length);
-                return Convert.ToBase64String(output);
+                    byte[] input = Encoding.UTF8.GetBytes(Value);
+                    byte[] output = transform.TransformFinalBlock(input, 0, input.Length);
+                    return Convert.ToBase64String(output);
+                }
             }
             set
             {
-                ICryptoTransform transform = GetDecryptTransform();
-
-                if (transform == null || string.IsNullOrEmpty(value))
+                using (ICryptoTransform transform = CreateDecryptTransform())
                 {
-                    Value = value;
-                    return;
-                }
+                    if (transform == null || string.IsNullOrEmpty(value))
+                    {
+                        Value = value;
+                        return;
+                    }
 
-                byte[] input = Convert.FromBase64String(value);
-                byte[] output = transform.TransformFinalBlock(input, 0, input.Length);
-                Value = Encoding.UTF8.GetString(output);
+                    byte[] input = Convert.FromBase64String(value);
+                    byte[] output = transform.TransformFinalBlock(input, 0, input.Length);
+                    Value = Encoding.UTF8.GetString(output);
+                }
             }
         }
 
+        /// <summary>
+        /// 基本构造函数。
+        /// </summary>
         protected CiphertextBase() { }
 
+        /// <summary>
+        /// 使用指定值创建新对象。
+        /// </summary>
+        /// <param name="value"></param>
         protected CiphertextBase(string value)
         {
             Value = value;
         }
 
-        protected virtual ICryptoTransform GetEncryptionTransform()
+        /// <summary>
+        /// 创建一个加密转换。
+        /// </summary>
+        /// <returns></returns>
+        protected virtual ICryptoTransform CreateEncryptionTransform()
         {
             return null;
         }
 
-        protected virtual ICryptoTransform GetDecryptTransform()
+        /// <summary>
+        /// 创建一个解密转换。
+        /// </summary>
+        /// <returns></returns>
+        protected virtual ICryptoTransform CreateDecryptTransform()
         {
             return null;
         }

@@ -1,5 +1,6 @@
 using System.Drawing;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 namespace Himesyo.Drawing
 {
     /// <summary>
@@ -18,7 +19,19 @@ namespace Himesyo.Drawing
             {
                 if (cartesianPoint == null)
                 {
-                    cartesianPoint = new PointF();
+                    switch (type)
+                    {
+                        case PointType.Empty:
+                            break;
+                        case PointType.CartesianPoint:
+                            break;
+                        case PointType.ComplexPoint:
+                            break;
+                        case PointType.PolarPoint:
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 return cartesianPoint.Value;
             }

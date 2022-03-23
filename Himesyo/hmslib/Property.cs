@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 namespace Himesyo
 {
     /// <summary>
@@ -54,7 +55,13 @@ namespace Himesyo
     /// <typeparam name="TValue"></typeparam>
     public class MemberToProperty<TValue>
     {
+        /// <summary>
+        /// Get 访问器所关联的成员信息。
+        /// </summary>
         public MemberInfo GetterMember { get; }
+        /// <summary>
+        /// Set 访问器所关联的成员信息。
+        /// </summary>
         public MemberInfo SetterMember { get; }
 
         /// <summary>

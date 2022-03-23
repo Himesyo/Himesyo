@@ -270,7 +270,7 @@ namespace Himesyo
         /// </summary>
         IFormatProvider FormatProvider { get; set; }
         /// <summary>
-        /// 获取或设置自定义获取字符串的函数。它拥有最高的优先级（仅针对 <see cref="ToString()"/>）。
+        /// 获取或设置自定义获取字符串的函数。它拥有最高的优先级（仅针对 <see cref="object.ToString()"/>）。
         /// </summary>
         Delegate Custom { get; set; }
         /// <summary>

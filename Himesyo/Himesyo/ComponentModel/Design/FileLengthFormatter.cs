@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Himesyo.ComponentModel.Design
 {
+    /// <summary>
+    /// 数据长度格式化器。
+    /// </summary>
     public class FileLengthFormatter : IFormatProvider, ICustomFormatter
     {
         private static readonly string[] units = new[] { " B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };

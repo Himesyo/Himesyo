@@ -32,20 +32,23 @@
 				</Literal>
 			</Declarations>
 			<Code Language="csharp">
-				<![CDATA[[$SystemSerializable$]
+				<![CDATA[/// <summary>
+/// 以密文形式保存到文件的字符串。
+/// </summary>
+[$SystemSerializable$]
 public class $newCiphertext$Ciphertext : $TCiphertextBase$
 {
-  public static $TCryptoTransform$ EncryptionTransform { get; set; }
-  public static $TCryptoTransform$ DecryptTransform { get; set; }
+  internal static $TCryptoTransform$ EncryptionTransform { get; set; }
+  internal static $TCryptoTransform$ DecryptTransform { get; set; }
 
   public $newCiphertext$Ciphertext() { }
   public $newCiphertext$Ciphertext(string value) : base(value) { }
 	
-  protected override ICryptoTransform GetEncryptionTransform()
+  protected override $TCryptoTransform$ GetEncryptionTransform()
   {
       return EncryptionTransform;
   }
-  protected override ICryptoTransform GetDecryptTransform()
+  protected override $TCryptoTransform$ GetDecryptTransform()
   {
       return DecryptTransform;
   }

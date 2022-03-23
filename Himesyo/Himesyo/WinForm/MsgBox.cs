@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 namespace Himesyo.WinForm
 {
     [DebuggerDisplay("{Result} [Buttons = {Buttons}, Message = {Message}]")]

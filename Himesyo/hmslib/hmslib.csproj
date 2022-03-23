@@ -6,8 +6,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\hmslib.xml</DocumentationFile>
-    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>..\bin\hmslib.xml</DocumentationFile>
+    <OutputPath>..\bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\bin\</OutputPath>
+    <DocumentationFile>..\bin\hmslib.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>
