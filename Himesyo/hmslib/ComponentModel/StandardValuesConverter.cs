@@ -13,15 +13,17 @@ namespace Himesyo.ComponentModel
     /// </summary>
     public sealed class StandardValuesConverter : TypeConverter
     {
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+        /// <inheritdoc/>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
             return sourceType == typeof(string);
         }
+        /// <inheritdoc/>
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
             return destinationType == typeof(string);
         }
+        /// <inheritdoc/>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if (value is string key)
@@ -52,6 +54,7 @@ namespace Himesyo.ComponentModel
             }
             throw new InvalidCastException();
         }
+        /// <inheritdoc/>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             try
@@ -93,20 +96,22 @@ namespace Himesyo.ComponentModel
             }
             return value;
         }
+        /// <inheritdoc/>
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
             StandardValuesAttribute attribute = context.PropertyDescriptor.Attributes[typeof(StandardValuesAttribute)] as StandardValuesAttribute;
             return new StandardValuesCollection(attribute.Values);
         }
+        /// <inheritdoc/>
         public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
         {
             StandardValuesAttribute attribute = context.PropertyDescriptor.Attributes[typeof(StandardValuesAttribute)] as StandardValuesAttribute;
             return attribute.StandardValuesExclusive;
         }
+        /// <inheritdoc/>
         public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
         {
             return true;
         }
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     }
 }

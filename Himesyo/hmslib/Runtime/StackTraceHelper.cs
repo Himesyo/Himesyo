@@ -21,6 +21,16 @@ namespace Himesyo.Runtime
     public static class StackTraceHelper
     {
         /// <summary>
+        /// 使用指定 <see cref="StackFrame"/> 数组创建 <see cref="StackTrace"/> 。
+        /// </summary>
+        /// <param name="frames"></param>
+        /// <returns></returns>
+        public static StackTrace CreateStackTrace(params StackFrame[] frames)
+        {
+            return new StackTracePart(frames);
+        }
+
+        /// <summary>
         /// 获取最后调用指定类型的堆栈函数调用。
         /// </summary>
         /// <param name="type"></param>

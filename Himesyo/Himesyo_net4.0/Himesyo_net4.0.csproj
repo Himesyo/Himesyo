@@ -36,6 +36,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +51,9 @@
     </Compile>
     <Compile Include="..\Himesyo\ComponentModel\Design\FileLengthFormatter.cs">
       <Link>ComponentModel\Design\FileLengthFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\ComponentModel\NullObjectConverter.cs">
+      <Link>ComponentModel\NullObjectConverter.cs</Link>
     </Compile>
     <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\FormatStringRenderer.cs">
       <Link>Drawing\FormatStringRenderer\FormatStringRenderer.cs</Link>
@@ -77,6 +81,9 @@
     </Compile>
     <Compile Include="..\Himesyo\Drawing\PointP.cs">
       <Link>Drawing\PointP.cs</Link>
+    </Compile>
+    <Compile Include="..\Himesyo\IO\DbConnectionConfig.cs">
+      <Link>IO\DbConnectionConfig.cs</Link>
     </Compile>
     <Compile Include="..\Himesyo\Win32\Resources.cs">
       <Link>Win32\Resources.cs</Link>
@@ -242,6 +249,12 @@
     <Compile Include="..\hmslib\Runtime\AttachData.cs">
       <Link>Runtime\AttachData.cs</Link>
     </Compile>
+    <Compile Include="..\hmslib\Runtime\CallInfo.cs">
+      <Link>Runtime\CallInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\CallMonitor.cs">
+      <Link>Runtime\CallMonitor.cs</Link>
+    </Compile>
     <Compile Include="..\hmslib\Runtime\CustomAttributeProvider.cs">
       <Link>Runtime\CustomAttributeProvider.cs</Link>
     </Compile>
@@ -254,8 +267,14 @@
     <Compile Include="..\hmslib\Runtime\ShouldIgnoreException.cs">
       <Link>Runtime\ShouldIgnoreException.cs</Link>
     </Compile>
+    <Compile Include="..\hmslib\Runtime\StackTraceComparer.cs">
+      <Link>Runtime\StackTraceComparer.cs</Link>
+    </Compile>
     <Compile Include="..\hmslib\Runtime\StackTraceHelper.cs">
       <Link>Runtime\StackTraceHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Runtime\StackTracePart.cs">
+      <Link>Runtime\StackTracePart.cs</Link>
     </Compile>
     <Compile Include="..\hmslib\ShowItem.cs">
       <Link>ShowItem.cs</Link>

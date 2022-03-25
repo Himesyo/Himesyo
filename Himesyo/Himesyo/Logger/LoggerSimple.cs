@@ -128,10 +128,18 @@ namespace Himesyo.Logger
             }
         }
         /// <summary>
-        /// 写入调试信息。
+        /// 仅在 DEBUG 条件下写入调试信息。
         /// </summary>
         /// <param name="info"></param>
         [Conditional("DEBUG")]
+        public static void WriteDebugOnly(string info)
+        {
+            Write(LogLevel.Debug, info);
+        }
+        /// <summary>
+        /// 写入调试信息。
+        /// </summary>
+        /// <param name="info"></param>
         public static void WriteDebug(string info)
         {
             Write(LogLevel.Debug, info);

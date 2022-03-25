@@ -20,7 +20,7 @@ namespace Himesyo.IO
         /// </summary>
         [XmlIgnore]
         [PasswordPropertyText(true)]
-        public string Value { get; protected set; }
+        public virtual string Value { get; set; }
 
         /// <summary>
         /// 序列化时使用的加密值。

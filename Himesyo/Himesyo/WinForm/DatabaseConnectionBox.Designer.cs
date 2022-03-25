@@ -32,7 +32,6 @@ namespace Himesyo.WinForm
             this.components = new System.ComponentModel.Container();
             this.labelTypes = new System.Windows.Forms.Label();
             this.comboTypes = new System.Windows.Forms.ComboBox();
-            this.buttonAdd = new System.Windows.Forms.LinkLabel();
             this.propertyEditor = new System.Windows.Forms.PropertyGrid();
             this.buttonSwitch = new System.Windows.Forms.Button();
             this.buttonTest = new System.Windows.Forms.Button();
@@ -59,21 +58,9 @@ namespace Himesyo.WinForm
             this.comboTypes.FormattingEnabled = true;
             this.comboTypes.Location = new System.Drawing.Point(105, 7);
             this.comboTypes.Name = "comboTypes";
-            this.comboTypes.Size = new System.Drawing.Size(198, 20);
+            this.comboTypes.Size = new System.Drawing.Size(311, 20);
             this.comboTypes.TabIndex = 1;
             this.comboTypes.SelectedIndexChanged += new System.EventHandler(this.comboTypes_SelectedIndexChanged);
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAdd.AutoSize = true;
-            this.buttonAdd.Location = new System.Drawing.Point(309, 10);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(107, 12);
-            this.buttonAdd.TabIndex = 2;
-            this.buttonAdd.TabStop = true;
-            this.buttonAdd.Text = "添加数据库驱动...";
-            this.buttonAdd.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.buttonAdd_LinkClicked);
             // 
             // propertyEditor
             // 
@@ -159,7 +146,6 @@ namespace Himesyo.WinForm
             this.Controls.Add(this.buttonTest);
             this.Controls.Add(this.buttonSwitch);
             this.Controls.Add(this.propertyEditor);
-            this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.comboTypes);
             this.Controls.Add(this.labelTypes);
             this.Name = "DatabaseConnectionBox";
@@ -174,7 +160,6 @@ namespace Himesyo.WinForm
 
         private System.Windows.Forms.Label labelTypes;
         private System.Windows.Forms.ComboBox comboTypes;
-        private System.Windows.Forms.LinkLabel buttonAdd;
         private System.Windows.Forms.PropertyGrid propertyEditor;
         private System.Windows.Forms.Button buttonSwitch;
         private System.Windows.Forms.Button buttonTest;

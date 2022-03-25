@@ -23,7 +23,7 @@ namespace Himesyo.WinForm
         /// </summary>
         public event ConnectionItemsEventHandler ConnectionItems;
 
-        private DatabaseConnectionBox connectionBox = new DatabaseConnectionBox();
+        private DatabaseConnectionBox connectionBox;
         private Form form = new Form();
 
         /// <summary>
@@ -41,6 +41,15 @@ namespace Himesyo.WinForm
         {
             get => form.Text;
             set => form.Text = value;
+        }
+
+        /// <summary>
+        /// 获取或设置返回的结果模式。默认为 <see cref="ConnectionResultMode.OpenConnection"/> 。
+        /// </summary>
+        public ConnectionResultMode ConnectionResultMode
+        {
+            get => connectionBox.ConnectionResultMode;
+            set => connectionBox.ConnectionResultMode = value;
         }
 
         /// <summary>
@@ -81,7 +90,7 @@ namespace Himesyo.WinForm
         /// <returns></returns>
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            DialogResult result = form.ShowDialog(new DialogOwner(hwndOwner));
+            DialogResult result = form.ShowDialog(NativeWindow.FromHandle(hwndOwner));
             return result == DialogResult.OK;
         }
 
@@ -103,16 +112,6 @@ namespace Himesyo.WinForm
             form.Size = new Size(500, 600);
             form.StartPosition = FormStartPosition.CenterParent;
             form.Controls.Add(connectionBox);
-        }
-
-        private class DialogOwner : IWin32Window
-        {
-            public IntPtr Handle { get; }
-
-            public DialogOwner(IntPtr hwndOwner)
-            {
-                Handle = hwndOwner;
-            }
         }
     }
 }

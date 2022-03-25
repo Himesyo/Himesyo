@@ -8,6 +8,7 @@ using System.Data.Common;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -39,13 +40,18 @@ namespace Himesyo.WinForm
         }
 
         /// <summary>
-        /// 连接成功后引发的事件。
+        /// 用户成功确认后引发的事件。
         /// </summary>
         public event EventHandler Opened;
         /// <summary>
         /// 获取现有连接列表的事件。
         /// </summary>
         public event ConnectionItemsEventHandler ConnectionItems;
+
+        /// <summary>
+        /// 获取或设置返回的结果模式。默认为 <see cref="ConnectionResultMode.OpenConnection"/> 。
+        /// </summary>
+        public ConnectionResultMode ConnectionResultMode { get; set; } = ConnectionResultMode.OpenConnection;
 
         /// <summary>
         /// 成功连接的结果对象。
@@ -86,16 +92,18 @@ namespace Himesyo.WinForm
         /// </summary>
         public void RefreshConnectionType()
         {
-            if (comboTypes.DataSource is BindingList<ShowItem<Type>> types)
+            if (comboTypes.DataSource is BindingList<IShowItem> types)
             {
-                foreach (ShowItem<Type> item in GetTypes().Except(types))
+                foreach (IShowItem item in GetTypes().Except(types).ToList())
                 {
-                    types.Add(item);
+                    types.Insert(types.Count - 1, item);
                 }
             }
             else
             {
-                comboTypes.DataSource = new BindingList<ShowItem<Type>>(GetTypes());
+                types = new BindingList<IShowItem>(GetTypes());
+                types.Add(new ShowItem<string>("<添加新驱动...>"));
+                comboTypes.DataSource = types;
             }
         }
 
@@ -122,7 +130,7 @@ namespace Himesyo.WinForm
 
         #region 自己用
 
-        private static List<ShowItem<Type>> GetTypes()
+        private static List<IShowItem> GetTypes()
         {
             try
             {
@@ -131,12 +139,14 @@ namespace Himesyo.WinForm
                     .GetAssemblies()
                     .SelectMany(ass => ass.GetTypes())
                     .Where(type => connString.IsAssignableFrom(type) && !type.IsAbstract && type != connString)
-                    .Select(type => new ShowItem<Type>(type, type.Name.Replace("StringBuilder", "")))
+                    .Select(type => new ShowItem<Type>(type, $"{type.Name.Replace("ConnectionStringBuilder", ""),-10} ({type.AssemblyQualifiedName})"))
+                    .Cast<IShowItem>()
                     .ToList();
                 return types;
             }
             catch (Exception ex)
             {
+                MsgBox.Show($"获取数据库类型失败。{ex.Message}");
                 LoggerSimple.WriteError(@"获取数据库类型失败。", ex);
                 return null;
             }
@@ -195,6 +205,39 @@ namespace Himesyo.WinForm
             return args;
         }
 
+        private void AddDriver()
+        {
+            using (OpenFileDialog open = new OpenFileDialog())
+            {
+                open.DefaultExt = "dll";
+                open.Filter = "程序集文件|*.dll;*.exe|所有文件|*.*";
+                if (open.ShowDialog() == DialogResult.OK)
+                {
+                    foreach (var file in open.FileNames)
+                    {
+                    重试:
+                        try
+                        {
+                            Assembly.LoadFrom(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            var box = MsgBox.Show(ex.Message, btns: MessageBoxButtons.AbortRetryIgnore, icon: MessageBoxIcon.Error);
+                            if (box.Result == DialogResult.Retry)
+                            {
+                                goto 重试;
+                            }
+                            else if (box.Result == DialogResult.Abort)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    RefreshConnectionType();
+                }
+            }
+        }
+
         #endregion
 
         #region 引发事件
@@ -235,11 +278,29 @@ namespace Himesyo.WinForm
                 }
                 else
                 {
-                    object connString = type.Value.Assembly.CreateInstance(type.Value.FullName);
+                    try
+                    {
+                        object connString = type.Value.Assembly.CreateInstance(type.Value.FullName);
 
-                    ShowObject show = CreateConnectionStringShow(connString);
-                    type.Tag = show;
-                    propertyEditor.SelectedObject = show;
+                        ShowObject show = CreateConnectionStringShow(connString);
+                        type.Tag = show;
+                        propertyEditor.SelectedObject = show;
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorMessage errorMessage = new ErrorMessage("未能创建字符串连接对象。");
+                        errorMessage.ExceptionMessage = ex.GetBaseException()?.Message;
+                        errorMessage.DetailedInfo = ex.ToString()?.Replace("--->", $"\r\n--->");
+                        propertyEditor.SelectedObject = errorMessage;
+                    }
+                }
+            }
+            else
+            {
+                AddDriver();
+                if (propertyEditor.SelectedObject is ShowObject show && show.ComponentObject is DbConnectionStringBuilder connectionString)
+                {
+                    comboTypes.SelectedItem = connectionString.GetType();
                 }
             }
         }
@@ -268,7 +329,7 @@ namespace Himesyo.WinForm
                 catch (Exception ex)
                 {
                     LoggerSimple.WriteError($"测试连接数据库失败。{connectionString.ConnectionString}", ex);
-                    MsgBox.Show($"{ex.Message}");
+                    MsgBox.Show(ex.Message);
                 }
                 finally
                 {
@@ -289,21 +350,44 @@ namespace Himesyo.WinForm
                     Result.Connection = null;
                 }
                 Result.ConnectionStringBuilder = connectionString;
+                if (ConnectionResultMode == ConnectionResultMode.None)
+                {
+                    OnOpened();
+                    return;
+                }
                 DbConnection newConnection = null;
                 try
                 {
                     newConnection = connectionString.Create<DbConnection>();
                     newConnection.ConnectionString = connectionString.ConnectionString;
                     newConnection.Open();
+                    if (ConnectionResultMode == ConnectionResultMode.ConfirmConnection)
+                    {
+                        newConnection.Close();
+                        newConnection.Dispose();
+                        OnOpened();
+                        return;
+                    }
                     Result.Connection = newConnection;
-                    OnOpened();
                 }
                 catch (Exception ex)
                 {
-                    MsgBox.Show($"连接失败！\r\n{ex}");
+                    MsgBox.Show(ex.Message);
                     newConnection?.Dispose();
                     return;
                 }
+                OnOpened();
+            }
+            else if (ConnectionResultMode == ConnectionResultMode.None)
+            {
+                if (Result.Connection != null)
+                {
+                    Result.Connection.Close();
+                    Result.Connection.Dispose();
+                    Result.Connection = null;
+                }
+                Result.ConnectionStringBuilder = null;
+                OnOpened();
             }
         }
 
@@ -312,39 +396,6 @@ namespace Himesyo.WinForm
             if (sender is ToolStripMenuItem menuItem && menuItem.Tag is ShowItem<DbConnectionStringBuilder> item)
             {
                 SelectedItem = item.Value;
-            }
-        }
-
-        private void buttonAdd_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            using (OpenFileDialog open = new OpenFileDialog())
-            {
-                open.DefaultExt = "dll";
-                open.Filter = "程序集文件|*.dll;*.exe|所有文件|*.*";
-                if (open.ShowDialog() == DialogResult.OK)
-                {
-                    foreach (var file in open.FileNames)
-                    {
-                    重试:
-                        try
-                        {
-                            Assembly.LoadFrom(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            var box = MsgBox.Show(ex.Message, btns: MessageBoxButtons.AbortRetryIgnore, icon: MessageBoxIcon.Error);
-                            if (box.Result == DialogResult.Retry)
-                            {
-                                goto 重试;
-                            }
-                            else if (box.Result == DialogResult.Abort)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    RefreshConnectionType();
-                }
             }
         }
 
@@ -377,6 +428,35 @@ namespace Himesyo.WinForm
                     connectionString.ConnectionString = connString;
                     propertyEditor.Refresh();
                 }
+            }
+        }
+
+        private class ErrorMessage
+        {
+            [Category("错误"), DisplayName("错误消息")]
+            [ReadOnly(true)]
+            public string Message { get; internal set; }
+
+            [Category("错误"), DisplayName("异常消息")]
+            [ReadOnly(true)]
+            public string ExceptionMessage { get; internal set; }
+
+            [Browsable(false)]
+            public string DetailedInfo { get; set; }
+
+            [Category("详细"), DisplayName("详细信息")]
+            [Editor(ConstValue.MultilineStringEditor, typeof(UITypeEditor))]
+            public string DetailedInfoReadOnly
+            {
+                get => DetailedInfo;
+                set { }
+            }
+
+            public ErrorMessage() { }
+            public ErrorMessage(string message, string detailedInfo = null)
+            {
+                Message = message;
+                DetailedInfo = detailedInfo;
             }
         }
     }
@@ -454,5 +534,24 @@ namespace Himesyo.WinForm
             }
             return connection;
         }
+    }
+
+    /// <summary>
+    /// 表示返回结果的模式。
+    /// </summary>
+    public enum ConnectionResultMode
+    {
+        /// <summary>
+        /// 结果可任意返回。
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// 结果需要保证可正确连接。
+        /// </summary>
+        ConfirmConnection,
+        /// <summary>
+        /// 结果需要打开连接。
+        /// </summary>
+        OpenConnection
     }
 }
