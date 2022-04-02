@@ -23,6 +23,17 @@ namespace Himesyo.Logger
         /// </summary>
         public static object SyncRoot { get; } = new object();
         /// <summary>
+        /// 日志记录器是否可用(是否初始化成功。)
+        /// </summary>
+        public static bool CanWrite
+        {
+            get
+            {
+                return loger != null;
+            }
+        }
+
+        /// <summary>
         /// 是否写入定位符。用于阅读器分析日志数据。默认为 <see langword="false"/> 。
         /// </summary>
         public static bool WriteLocator
@@ -36,6 +47,23 @@ namespace Himesyo.Logger
                 if (loger != null)
                 {
                     loger.writeLocator = value;
+                }
+            }
+        }
+        /// <summary>
+        /// 是否写入调用日志方法的名称。它会影响程序运行的效率。默认为 <see langword="true"/> 。
+        /// </summary>
+        public static bool WriteCallLocation
+        {
+            get
+            {
+                return loger?.writeCallLocation ?? false;
+            }
+            set
+            {
+                if (loger != null)
+                {
+                    loger.writeCallLocation = value;
                 }
             }
         }
@@ -57,15 +85,47 @@ namespace Himesyo.Logger
             }
         }
         /// <summary>
-        /// 日志记录器是否可用(是否初始化成功。)
+        /// 单个文件大小上限。(单位：字节)
         /// </summary>
-        public static bool CanWrite
+        public static long SingleLength
         {
-            get
+            get => loger?.singleLength ?? default;
+            set
             {
-                return loger != null;
+                if (loger != null)
+                {
+                    loger.singleLength = value;
+                }
             }
         }
+        /// <summary>
+        /// 文件数量上限
+        /// </summary>
+        public static int FileMaxCount
+        {
+            get => loger?.fileMaxCount ?? default;
+            set
+            {
+                if (loger != null)
+                {
+                    loger.fileMaxCount = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 当前时间的字符串表示形式。以 yyyy-MM-dd HH:mm:ss.fff 的格式。
+        /// </summary>
+        public static string Time => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        /// <summary>
+        /// 当前线程的 <see cref="Thread.ManagedThreadId"/> 。
+        /// </summary>
+        public static int TID => Thread.CurrentThread.ManagedThreadId;
+        /// <summary>
+        /// 调用此方法的方法的名称。类.方法。
+        /// </summary>
+        public static string CallMethodName => GetMethodName();
+
         /// <summary>
         /// 使用指定目录和程序名称初始化记录器。
         /// </summary>
@@ -86,6 +146,17 @@ namespace Himesyo.Logger
             loger = new LoggerSimple();
         }
         /// <summary>
+        /// 使用配置对象配置参数。设置前必须先进行初始化。
+        /// </summary>
+        /// <param name="config"></param>
+        public static void SetConfig(ILoggerSimpleConfig config)
+        {
+            WriteCallLocation = config.WriteCallLocation;
+            WriteDebugLevel = config.WriteDebugLevel;
+            SingleLength = config.SingleLength;
+            FileMaxCount = config.FileMaxCount;
+        }
+        /// <summary>
         /// 写入消息。
         /// </summary>
         /// <param name="level"></param>
@@ -100,10 +171,11 @@ namespace Himesyo.Logger
                     loger.stream.Seek(0, SeekOrigin.End);
                     if (WriteDebugLevel || level != LogLevel.Debug)
                     {
+                        string location = WriteCallLocation ? $"[[{TID}]{GetMethodName()}]" : $"[{TID}]";
                         if (loger.writeLocator)
                         {
                             loger.writer.Write(newInfo);
-                            loger.writer.Write($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [[{Thread.CurrentThread.ManagedThreadId}]{GetMethodName()}] {$"[{level}]",-7} - ");
+                            loger.writer.Write($"{Time} {location} {$"[{ level}]",-7} - ");
                             loger.writer.Write(start);
                             loger.writer.Write(info);
                             loger.writer.Write(end);
@@ -112,7 +184,7 @@ namespace Himesyo.Logger
                         else
                         {
                             loger.writer.Write(Environment.NewLine);
-                            loger.writer.Write($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [[{Thread.CurrentThread.ManagedThreadId}]{GetMethodName()}] {$"[{level}]",-7} - ");
+                            loger.writer.Write($"{Time} {location} {$"[{level}]",-7} - ");
                             loger.writer.Write(info);
                             loger.Check();
                         }
@@ -120,7 +192,8 @@ namespace Himesyo.Logger
                 }
                 catch (Exception ex)
                 {
-                    File.AppendAllText(Path.Combine(root, "Loger.ErrorInfo"), $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [{name}] - {ex}");
+                    File.AppendAllText(Path.Combine(root, "Loger.ErrorInfo"), $"{Time} [{name}] - {ex}");
+                    loger.Open();
                 }
                 finally
                 {
@@ -261,14 +334,36 @@ namespace Himesyo.Logger
         private Stream stream;
         private StreamWriter writer;
         private bool writeLocator = false;
+        private bool writeCallLocation = false;
         private bool writeDebugLevel = true;
+
+        private long singleLength = 10 * 1024 * 1024;
+        private int fileMaxCount = 20;
 
         private LoggerSimple()
         {
+            Open();
+        }
+        private void Open()
+        {
             try
             {
+                writer?.Dispose();
+                stream?.Dispose();
                 eventWait.WaitOne();
-                string path = Directory.GetFiles(root, $"{name} ????????-??????.???.log").LastOrDefault();
+                string[] logs = Directory.EnumerateFiles(root, $"{name} ????????-??????.???.log")
+                    .OrderBy(logFile => logFile)
+                    .ToArray();
+                int delLength = logs.Length - 20;
+                for (int i = 0; i < delLength; i++)
+                {
+                    try
+                    {
+                        File.Delete(logs[i]);
+                    }
+                    catch { }
+                }
+                string path = logs.LastOrDefault();
                 if (path != null)
                 {
                     FileInfo file = new FileInfo(path);
@@ -283,7 +378,7 @@ namespace Himesyo.Logger
             }
             catch (Exception ex)
             {
-                File.AppendAllText(Path.Combine(root, "Loger.ErrorInfo"), $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [{name}] - {ex}");
+                File.AppendAllText(Path.Combine(root, "Loger.ErrorInfo"), $"{Time} [{name}] - {ex}");
             }
             finally
             {
@@ -325,7 +420,7 @@ namespace Himesyo.Logger
         private void Check()
         {
             writer.Flush();
-            if (stream.Length >= 1024 * 1024 * 1024)
+            if (stream.Length >= 10 * 1024 * 1024)
             {
                 Create();
             }
@@ -341,13 +436,29 @@ namespace Himesyo.Logger
         }
     }
 
-    public enum LogLevel
+    /// <summary>
+    /// 表示此对象包含 <see cref="LoggerSimple"/> 类的配置参数。
+    /// </summary>
+    public interface ILoggerSimpleConfig
     {
-        None,
-        Debug,
-        Info,
-        Warn,
-        Error,
-        Fatal
+        /// <summary>
+        /// 是否写入调用日志方法的名称。它会影响程序运行的效率。
+        /// </summary>
+        bool WriteCallLocation { get; }
+
+        /// <summary>
+        /// 是否写入 <see cref="LogLevel.Debug"/> 等级的日志。
+        /// </summary>
+        bool WriteDebugLevel { get; }
+
+        /// <summary>
+        /// 单个文件大小上限。(单位：字节)
+        /// </summary>
+        long SingleLength { get; }
+
+        /// <summary>
+        /// 文件数量上限
+        /// </summary>
+        int FileMaxCount { get; }
     }
 }

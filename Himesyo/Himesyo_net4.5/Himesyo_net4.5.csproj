@@ -56,6 +56,9 @@
     <Compile Include="..\Himesyo\ComponentModel\NullObjectConverter.cs">
       <Link>ComponentModel\NullObjectConverter.cs</Link>
     </Compile>
+    <Compile Include="..\Himesyo\Data\ConnectionResultAsync.cs">
+      <Link>Data\ConnectionResultAsync.cs</Link>
+    </Compile>
     <Compile Include="..\Himesyo\Drawing\FormatStringRenderer\FormatStringRenderer.cs">
       <Link>Drawing\FormatStringRenderer\FormatStringRenderer.cs</Link>
     </Compile>
@@ -199,6 +202,9 @@
     <Compile Include="..\hmslib\CultureInfoExtend.cs">
       <Link>CultureInfoExtend.cs</Link>
     </Compile>
+    <Compile Include="..\hmslib\Data\ConnectionResult.cs">
+      <Link>Data\ConnectionResult.cs</Link>
+    </Compile>
     <Compile Include="..\hmslib\Data\DatabaseExtend.cs">
       <Link>Data\DatabaseExtend.cs</Link>
     </Compile>
@@ -249,6 +255,9 @@
     </Compile>
     <Compile Include="..\hmslib\Logger\LoggerSimple.cs">
       <Link>Logger\LoggerSimple.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Logger\LogLevel.cs">
+      <Link>Logger\LogLevel.cs</Link>
     </Compile>
     <Compile Include="..\hmslib\Property.cs">
       <Link>Property.cs</Link>

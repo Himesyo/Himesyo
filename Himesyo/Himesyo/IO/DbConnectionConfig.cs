@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 
 using Himesyo.ComponentModel;
+using Himesyo.Data;
 using Himesyo.Logger;
 using Himesyo.WinForm;
 
@@ -30,34 +31,33 @@ namespace Himesyo.IO
         /// 连接字符串。加密保存的连接字符串。
         /// </summary>
         [Browsable(false)]
+        [XmlElement("ConnString")]
         public TCiphertext ConnStringCiphertext
         {
-            get => new TCiphertext() { Value = ConnString };
-            set => ConnString = value?.Value;
+            get => new TCiphertext() { Value = ConnStringValue };
+            set => ConnStringValue = value?.Value;
         }
 
         /// <summary>
         /// 获取或设置连接字符串。
         /// </summary>
         [XmlIgnore]
-        public override string ConnString { get; set; }
+        public override string ConnStringValue { get; set; }
     }
 
     /// <summary>
-    /// 表示一个连接字符串配置。
-    /// <para>注意：它以明文的方式保存连接字符串。</para>
-    /// <para>推荐改用 <see cref="DbConnectionConfig{TCiphertext}"/></para>
+    /// 表示一个连接字符串配置。它是一个抽象类。
     /// </summary>
     [Serializable]
     [TypeConverter(typeof(NullObjectConverter))]
-    public class DbConnectionConfig
+    public abstract class DbConnectionConfig
     {
         /// <summary>
-        /// <see cref="ConnType"/> 或 <see cref="ConnString"/> 未设定值时为 <see langword="true"/>，否则为 <see langword="false"/> 。
+        /// <see cref="ConnType"/> 或 <see cref="ConnStringValue"/> 未设定值时为 <see langword="true"/>，否则为 <see langword="false"/> 。
         /// </summary>
         [Browsable(false)]
         [XmlIgnore]
-        public bool ExistEmpty => string.IsNullOrWhiteSpace(ConnType) || string.IsNullOrWhiteSpace(ConnString);
+        public bool ExistEmpty => string.IsNullOrWhiteSpace(ConnType) || string.IsNullOrWhiteSpace(ConnStringValue);
 
         /// <summary>
         /// 连接类型。继承自 <see cref="DbConnectionStringBuilder"/> 类型的程序集限定名。
@@ -67,20 +67,21 @@ namespace Himesyo.IO
         /// <summary>
         /// 获取或设置连接字符串。
         /// </summary>
-        public virtual string ConnString { get; set; }
+        [XmlIgnore]
+        public abstract string ConnStringValue { get; set; }
 
         /// <summary>
         /// 创建连接字符串对象。不会创建连接对象。
         /// </summary>
         /// <returns></returns>
-        public ConnectionResult CreateStringBuilder()
+        public virtual ConnectionResult CreateStringBuilder()
         {
             ExceptionHelper.ThrowInvalid(string.IsNullOrWhiteSpace(ConnType), "未配置连接类型。");
             //ExceptionHelper.ThrowInvalid(string.IsNullOrWhiteSpace(ConnString), "未配置连接字符串。");
 
             Type type = Type.GetType(ConnType);
             DbConnectionStringBuilder builder = (DbConnectionStringBuilder)type.Assembly.CreateInstance(type.FullName);
-            builder.ConnectionString = ConnString;
+            builder.ConnectionString = ConnStringValue;
             ConnectionResult result = new ConnectionResult();
             result.ConnectionStringBuilder = builder;
             return result;
@@ -144,7 +145,7 @@ namespace Himesyo.IO
                                 else
                                 {
                                     DbConnectionStringBuilder stringBuilder = (DbConnectionStringBuilder)connType.Assembly.CreateInstance(connType.FullName);
-                                    stringBuilder.ConnectionString = edit.ConnString;
+                                    stringBuilder.ConnectionString = edit.ConnStringValue;
                                     dialog.ConnectionStringBuilder = stringBuilder;
                                 }
                             }
@@ -159,7 +160,7 @@ namespace Himesyo.IO
                         DbConnectionStringBuilder stringBuilder = dialog.Result.ConnectionStringBuilder;
                         DbConnectionConfig result = (DbConnectionConfig)type.Assembly.CreateInstance(type.FullName);
                         result.ConnType = stringBuilder.GetType().AssemblyQualifiedName;
-                        result.ConnString = stringBuilder.ConnectionString;
+                        result.ConnStringValue = stringBuilder.ConnectionString;
                         return result;
                     }
                     else

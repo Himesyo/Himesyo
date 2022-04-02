@@ -88,6 +88,9 @@
     <Compile Include="..\hmslib\CultureInfoExtend.cs">
       <Link>CultureInfoExtend.cs</Link>
     </Compile>
+    <Compile Include="..\hmslib\Data\ConnectionResult.cs">
+      <Link>Data\ConnectionResult.cs</Link>
+    </Compile>
     <Compile Include="..\hmslib\Data\DatabaseExtend.cs">
       <Link>Data\DatabaseExtend.cs</Link>
     </Compile>
@@ -133,6 +136,12 @@
     <Compile Include="..\hmslib\Linq\Enumerable.cs">
       <Link>Linq\Enumerable.cs</Link>
     </Compile>
+    <Compile Include="..\hmslib\Logger\LoggerSimple.cs">
+      <Link>Logger\LoggerSimple.cs</Link>
+    </Compile>
+    <Compile Include="..\hmslib\Logger\LogLevel.cs">
+      <Link>Logger\LogLevel.cs</Link>
+    </Compile>
     <Compile Include="..\hmslib\Property.cs">
       <Link>Property.cs</Link>
     </Compile>
@@ -172,6 +181,7 @@
     <Compile Include="ComponentModel\ConstValue.cs" />
     <Compile Include="ComponentModel\Design\FileLengthFormatter.cs" />
     <Compile Include="ComponentModel\NullObjectConverter.cs" />
+    <Compile Include="Data\ConnectionResultAsync.cs" />
     <Compile Include="Drawing\FormatStringRenderer\FormatStringRenderer.cs" />
     <Compile Include="Drawing\FormatStringRenderer\Phrase.cs" />
     <Compile Include="Drawing\FormatStringRenderer\Phrases.cs" />
@@ -183,7 +193,6 @@
     <Compile Include="Drawing\PointC.cs" />
     <Compile Include="Drawing\PointConverter.cs" />
     <Compile Include="IO\DbConnectionConfig.cs" />
-    <Compile Include="Logger\LoggerSimple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Win32\Resources.cs" />
     <Compile Include="Win32\Window.cs" />
@@ -249,5 +258,6 @@
       <DependentUpon>PromptTextBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

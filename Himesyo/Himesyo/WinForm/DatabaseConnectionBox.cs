@@ -495,48 +495,6 @@ namespace Himesyo.WinForm
     }
 
     /// <summary>
-    /// 连接结果类型。
-    /// </summary>
-    public class ConnectionResult
-    {
-        /// <summary>
-        /// 连接字符串拼接对象。
-        /// </summary>
-        public DbConnectionStringBuilder ConnectionStringBuilder { get; set; }
-
-        /// <summary>
-        /// 数据库连接。
-        /// </summary>
-        public DbConnection Connection { get; set; }
-
-        /// <summary>
-        /// 当前连接是否在打开状态。
-        /// </summary>
-        public bool IsOpen => Connection?.State == ConnectionState.Open;
-
-        /// <summary>
-        /// 使用当前 <see cref="ConnectionStringBuilder"/> 打开新连接。
-        /// </summary>
-        /// <returns></returns>
-        public DbConnection OpenNewConnection()
-        {
-            ExceptionHelper.ThrowInvalid(ConnectionStringBuilder == null, "连接对象为 null 。");
-            DbConnection connection = ConnectionStringBuilder.Create<DbConnection>();
-            connection.ConnectionString = ConnectionStringBuilder.ConnectionString;
-            try
-            {
-                connection.Open();
-            }
-            catch
-            {
-                connection.Dispose();
-                throw;
-            }
-            return connection;
-        }
-    }
-
-    /// <summary>
     /// 表示返回结果的模式。
     /// </summary>
     public enum ConnectionResultMode

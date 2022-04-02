@@ -36,6 +36,10 @@ namespace Himesyo
         /// 释放完成后触发。
         /// </summary>
         public event EventHandler Disposed;
+        /// <summary>
+        /// 接收到结果前触发。已挂起时也会触发。
+        /// </summary>
+        public event EventHandler<ResultReceivingEventArgs<TResult>> ResultReceiving;
 
         /// <summary>
         /// 重置队列。清除所有未处理的消息。
@@ -67,7 +71,9 @@ namespace Himesyo
         /// <param name="result"></param>
         public void SetResult(TResult result)
         {
-            if (IsSuspend || IsDispose)
+            var args = new ResultReceivingEventArgs<TResult>(result, IsSuspend, IsDispose);
+            OnResultReceiving(args);
+            if (args.Cancel || IsSuspend || IsDispose)
             {
                 return;
             }
@@ -148,5 +154,46 @@ namespace Himesyo
             Disposed?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// 引发 <see cref="ResultReceiving"/> 事件。
+        /// </summary>
+        /// <param name="args"></param>
+        protected virtual void OnResultReceiving(ResultReceivingEventArgs<TResult> args)
+        {
+            ResultReceiving?.Invoke(this, args);
+        }
+    }
+
+    /// <summary>
+    /// 接收到消息触发的事件的参数。
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    public class ResultReceivingEventArgs<TResult> : CancelEventArgs
+    {
+        /// <summary>
+        /// 接收到的结果。
+        /// </summary>
+        public TResult Result { get; }
+        /// <summary>
+        /// 当前是否在挂起状态。
+        /// </summary>
+        public bool IsSuspend { get; }
+        /// <summary>
+        /// 当前是否已释放。
+        /// </summary>
+        public bool IsDispose { get; }
+
+        /// <summary>
+        /// 使用所有必须属性初始化新实例。
+        /// </summary>
+        /// <param name="result">结果</param>
+        /// <param name="isSuspend">是否已挂起</param>
+        /// <param name="isDispose">是否已释放</param>
+        public ResultReceivingEventArgs(TResult result, bool isSuspend, bool isDispose)
+        {
+            Result = result;
+            IsSuspend = isSuspend;
+            IsDispose = isDispose;
+        }
     }
 }
