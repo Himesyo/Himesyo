@@ -199,6 +199,7 @@ namespace Himesyo
         /// <param name="isRecovery"></param>
         public Recovery(Freezer freezer, bool isRecovery)
         {
+            freezer.Frozen();
             if (isRecovery)
             {
                 recovery = freezer.Recovery;

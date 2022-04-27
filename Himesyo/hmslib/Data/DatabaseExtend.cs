@@ -286,8 +286,8 @@ namespace Himesyo.Data
         /// <param name="defaultValue"></param>
         /// <returns></returns>
         public static TValue GetValueOrDefault<TValue>(
-            this DbDataReader dataReader, 
-            string columnName, 
+            this DbDataReader dataReader,
+            string columnName,
             TValue defaultValue = default)
         {
             return dataReader.GetValueOrDefault(columnName, defaultValue, defaultValue);
@@ -329,5 +329,32 @@ namespace Himesyo.Data
             }
             return defaultValue;
         }
+
+        public static WrapperCommand Wrap(this DbCommand command)
+        {
+            return command == null ? null : new WrapperCommand(command);
+        }
+    }
+
+    /// <summary>
+    /// 表示一个包装 <see cref="DbCommand"/> 的命令对象。
+    /// </summary>
+    public class WrapperCommand 
+    {
+        /// <summary>
+        /// 包装的 <see cref="DbCommand"/> 对象。
+        /// </summary>
+        public DbCommand WrapObject { get; }
+
+        public static WrapperCommand Create(DbCommand command)
+        {
+            return new WrapperCommand(command);
+        }
+
+        public WrapperCommand(DbCommand command)
+        {
+
+        }
+
     }
 }

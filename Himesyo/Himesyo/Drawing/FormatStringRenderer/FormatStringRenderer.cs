@@ -8,8 +8,6 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
-using static System.Windows.Forms.AxHost;
-
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 namespace Himesyo.Drawing
 {
