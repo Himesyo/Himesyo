@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Himesyo_net4.0", "Himesyo_n
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Himesyo_net4.5", "Himesyo_net4.5\Himesyo_net4.5.csproj", "{9E883738-631B-4BEC-B4EE-651812479425}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Himesyo_net6.0", "Himesyo_net6.0\Himesyo_net6.0.csproj", "{97A0F7FE-3C8E-4CA1-8164-DC1322D5CABD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Himesyo_net6.0", "Himesyo_net6.0\Himesyo_net6.0.csproj", "{97A0F7FE-3C8E-4CA1-8164-DC1322D5CABD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAService", "IAService\IAService.csproj", "{BEF624D8-F2C5-4EA0-94CC-344B0DFCCEB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{97A0F7FE-3C8E-4CA1-8164-DC1322D5CABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97A0F7FE-3C8E-4CA1-8164-DC1322D5CABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97A0F7FE-3C8E-4CA1-8164-DC1322D5CABD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF624D8-F2C5-4EA0-94CC-344B0DFCCEB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF624D8-F2C5-4EA0-94CC-344B0DFCCEB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF624D8-F2C5-4EA0-94CC-344B0DFCCEB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF624D8-F2C5-4EA0-94CC-344B0DFCCEB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

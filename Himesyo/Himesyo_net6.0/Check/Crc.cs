@@ -238,7 +238,7 @@ namespace Himesyo.Check
         protected abstract byte[] ComputeCrcCore(byte data);
     }
 
-    public class Crc8 : CRC
+    public class CRC8 : CRC
     {
         private const int bit = 8;
         private const uint top = 0x80;
@@ -251,7 +251,7 @@ namespace Himesyo.Check
 
         protected override void InitCrcTableCore()
         {
-            throw new NotImplementedException();int
+            throw new NotImplementedException();
         }
 
         protected override byte[] ComputeCrcCore(byte data)
@@ -274,24 +274,5 @@ namespace Himesyo.Check
             throw new NotImplementedException();
         }
 
-
-        /// <summary>
-        /// 计算与初始值、结果异或值无关的单个字节的 CRC 值。其计算结果与 CRC 表一致。
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public ushort ComputeCrc(byte data)
-        {
-            ushort rem = data;
-            for (int i = 0; i < bit; i++)
-            {
-                if ((rem & top) == 0)
-                    rem <<= 1;
-                else
-                    rem = (rem << 1) ^ poly;
-            }
-            rem &= down;
-            return rem;
-        }
     }
 }

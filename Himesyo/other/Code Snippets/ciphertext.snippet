@@ -38,26 +38,25 @@
 [$SystemSerializable$]
 public class $newCiphertext$Ciphertext : $TCiphertextBase$
 {
-  internal static $TCryptoTransform$ EncryptionTransform { get; set; }
-  internal static $TCryptoTransform$ DecryptTransform { get; set; }
+  internal static $TSymmetricAlgorithm$? Algorithm { get; set; }
 
   public $newCiphertext$Ciphertext() { }
   public $newCiphertext$Ciphertext(string value) : base(value) { }
 	
-  protected override $TCryptoTransform$ GetEncryptionTransform()
+  protected override $TCryptoTransform$? CreateEncryptor()
   {
-      return EncryptionTransform;
+      return Algorithm?.CreateEncryptor();
   }
-  protected override $TCryptoTransform$ GetDecryptTransform()
+  protected override $TCryptoTransform$? CreateDecryptor()
   {
-      return DecryptTransform;
+      return Algorithm?.CreateDecryptor();
   }
 
-  public static implicit operator $newCiphertext$Ciphertext(string value)
+  public static implicit operator $newCiphertext$Ciphertext(string? value)
   {
       return new $newCiphertext$Ciphertext(value);
   }
-  public static implicit operator string($newCiphertext$Ciphertext value)
+  public static implicit operator string?($newCiphertext$Ciphertext? value)
   {
       return value?.Value;
   }
